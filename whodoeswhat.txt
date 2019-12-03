@@ -1,0 +1,6 @@
+Lassi:
+vankoin kokemus www/express ottaa kopin laajan skaalan ongelmista ja heittää ne eteenpäin prioriteetin mukaan toteemipuussa alaspäin
+Pietari:
+etsii kaiken uuden tarvittavan tiedon ja relayaa sen eteenpäin
+Jussi:
+nappaa kiinni ei aikasensitiivisistä ongelmista ja käy niihin käsiksi
