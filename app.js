@@ -29,7 +29,7 @@ db.connectDB(dbConfig);
 
 // setup admin user
 // TODO: pass config with the right key to add admin user
-require('./setup/createusers') /*TODO: add here;*/;
+require('./setup/createusers')(config.get("admin")) /*TODO: add here;*/ ;
 
 if (app.get('env') === 'development') {
     app.use(logger('dev'));
@@ -119,19 +119,21 @@ app.use((request, response, next) => {
 });
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({
+    extended: true
+}));
 
 // send app to router
 require('./router.js')(app);
 
 // catch 404 and forward to error handler
 // NOTE: this middleware must be defined after all other routes
-app.use(function(request, response, next) {
+app.use(function (request, response, next) {
     next(createError(404));
 });
 
 // error handler
-app.use(function(error, request, response, next) {
+app.use(function (error, request, response, next) {
     // set locals, only providing error in development
     response.locals.message = error.message;
     response.locals.error =

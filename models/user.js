@@ -93,51 +93,52 @@ const userSchema = new Schema({
             // transparently encrypt password when setting it using:
             // setter must be synchronous or errors will happen
             // TODO: hash password here with bcrypt, use length of 10,
-            return //TODO: here;
+            let hash = bcrypt.hashSync(password, 10);
+            return hash;
         }
     },
-    //TODO: add role, trim, lowercase, and it should enumerate possible schemaDefults.role.values, and default to defaultValues
-});
-
-userSchema.virtual('isAdmin').get(function() {
-    // eslint-disable-next-line babel/no-invalid-this
-    //TODO: add the admin check for the role of this object
-    // the helper function should return either true of false
-});
-
-userSchema.virtual('isTeacher').get(function() {
-    // eslint-disable-next-line babel/no-invalid-this
-    //TODO: add the teacher check for the role of this object
-    // Note that admin can be anything
-    // the helper function should return either true of false
-});
-
-userSchema.virtual('isStudent').get(function() {
-    // eslint-disable-next-line babel/no-invalid-this
-    //TODO: add the teacher check for the role of this object
-    //Note that admin can be anything
-    // the helper function should return either true of false
-});
-
-userSchema.statics.getAvailableRoles = function() {
-    // FIXME: Do not hard code! Construct this automatically
-    return [{
-        name: 'Student',
-        value: 'student'
+    role: {
+        type: String,
+        trim: true,
+        lowercase: true,
+        enum: schemaDefaults.role.values,
+        default: schemaDefaults.role.defaultValue
     },
-    {
-        name: 'Teacher',
-        value: 'teacher'
-    },
-    {
-        name: 'Admin',
-        value: 'admin'
-    }];
+});
+
+userSchema.virtual('isAdmin').get(function () {
+    return this.role === "admin";
+});
+
+userSchema.virtual('isTeacher').get(function () {
+    if (this.role === "admin") return true;
+    return this.role === "teacher";
+});
+
+userSchema.virtual('isStudent').get(function () {
+    if (this.role === "admin") return true;
+    return this.role === "student";
+});
+
+userSchema.statics.getAvailableRoles = function () {
+
+    let roles = schemaDefaults.role.values.map(i => {
+        let j = {
+            name: i.charAt(0).toUpperCase() + i.substring(1),
+            value: i
+        };
+        return j;
+    });
+
+    return roles;
 };
 
-userSchema.statics.validateRole = function(data) {
+userSchema.statics.validateRole = function (data) {
     // validate user input for role
-    const { _csrf, role } = inputSchema;
+    const {
+        _csrf,
+        role
+    } = inputSchema;
     const roleValidationSchema = {
         role: role.required(),
         _csrf: _csrf
@@ -147,9 +148,12 @@ userSchema.statics.validateRole = function(data) {
     return result;
 };
 
-userSchema.statics.validateLogin = function(data) {
+userSchema.statics.validateLogin = function (data) {
     // validate user input for login
-    const { email, password } = inputSchema;
+    const {
+        email,
+        password
+    } = inputSchema;
     const loginValidationSchema = {
         email: email.required(),
         password: password.min(1).required()
@@ -159,10 +163,15 @@ userSchema.statics.validateLogin = function(data) {
     return result;
 };
 
-userSchema.statics.validateRegistration = function(data) {
+userSchema.statics.validateRegistration = function (data) {
     // validate user input for registration
     // eslint-disable-next-line no-shadow
-    const { name, email, password, passwordConfirmation } = inputSchema;
+    const {
+        name,
+        email,
+        password,
+        passwordConfirmation
+    } = inputSchema;
     const registerValidationSchema = {
         name: name.required(),
         email: email.required(),
@@ -178,10 +187,15 @@ userSchema.statics.validateRegistration = function(data) {
     return result;
 };
 
-userSchema.statics.validateUpdate = function(data) {
+userSchema.statics.validateUpdate = function (data) {
     // validate user input for update
     // eslint-disable-next-line no-shadow
-    const { _csrf, name, email, password } = inputSchema;
+    const {
+        _csrf,
+        name,
+        email,
+        password
+    } = inputSchema;
     const updateValidationSchema = {
         name: name.required(),
         email: email.required(),
@@ -196,7 +210,7 @@ userSchema.statics.validateUpdate = function(data) {
     return result;
 };
 
-userSchema.methods.checkPassword = async function(password) {
+userSchema.methods.checkPassword = async function (password) {
     return await bcrypt.compare(password, this.password);
 };
 
