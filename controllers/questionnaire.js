@@ -13,7 +13,9 @@ module.exports = {
             .sort('title')
             .exec()
         console.log("listing", questionnaire)
-        response.render("questionnaire/questionnaires")
+        response.render("questionnaire/list_questionnaires", {
+            questionnaire
+        })
     },
     async show(request, response) {
 
