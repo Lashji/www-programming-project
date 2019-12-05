@@ -1,0 +1,13 @@
+{{#if questionnaire}}
+{{#withGroup questionnaire 3}}
+<div class="card-deck mt-3">
+    {{#each this as |questionnaire index|}}
+    {{>questionnaire_info questionaire}}
+    {{/each}}
+</div>
+{{/withGroup}}
+{{else}}
+<div class="alert alert-danger">
+    <p>No questionnares found.</p>
+</div>
+{{/if}}
