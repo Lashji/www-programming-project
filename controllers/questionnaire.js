@@ -9,12 +9,12 @@ module.exports = {
      * @param {Object} response is express response object
      */
     async list(request, response) {
-        const questionnaire = await Questionnaire.find()
+        const questionnaires = await Questionnaire.find()
             .sort('title')
             .exec()
-        console.log("listing", questionnaire)
+        console.log("listing", questionnaires)
         response.render("questionnaire/list_questionnaires", {
-            questionnaire
+            questionnaires
         })
     },
     async show(request, response) {
