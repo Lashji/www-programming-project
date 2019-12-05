@@ -1,18 +1,26 @@
 <div class="card">
     <div class="card-header">
-        <h5 class="card-title"><i class="fas fa-question-circle"></i> {{questionnaire.title}}</h5>
+        <h5 class="card-title"><i class="fas fa-question-circle"></i> {{this.title}}</h5>
     </div>
     <div class="card-body">
-        <h5 class="card-title">{{this.title}}</h5>
-        <p class="card-text">Questions: {{this.questions}}
+        {{!-- < class="card-text">Questions: {{this.questions}} --}}
+        <ul>
+            {{#each this.questions}}
+            <li>{{this.title}}</li>
             <ul>
-                {{#each questionnaire.questions}}
-                <li>{{this.title}}</li>
+                {{#each this.options}}
+                <li>Option: {{this.option}} /
+                    Correctness: {{this.correctness}}
+                </li>
                 {{/each}}
             </ul>
+            {{/each}}
+        </ul>
         </p>
     </div>
     <div class="card-footer">
+        <h5 class="card-title">Submissions: {{this.submissions}}</h5>
+
         {{!-- {{#and (and @root.isAdmin (not @root.isProfile)) (not (eq @root.userId this.id))}} --}}
         {{!-- <a class="btn btn-primary" href="/users/delete/{{this.id}}"><i class="fas fa-user-times"></i>Remove</a> --}}
         {{!-- {{else}}
