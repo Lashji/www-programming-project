@@ -1,7 +1,9 @@
 <div class="card">
-    <div class="card-header">
-        <h5 class="card-title"><i class="fas fa-question-circle"></i> {{this.title}}</h5>
-    </div>
+    <a href="/questionnaires/{{this.id}}">
+        <div class="card-header">
+            <h5 class="card-title"><i class="fas fa-question-circle"></i> {{this.title}}</h5>
+        </div>
+    </a>
     <div class="card-body">
         {{!-- < class="card-text">Questions: {{this.questions}} --}}
         {{!-- <ul> --}}
@@ -24,4 +26,5 @@
         <a class="btn btn-success" href="/questionnaires/edit/{{this.id}}"><i class="fas fa-user-edit"></i>Edit</a>
         <a class="btn btn-danger" href="/questionnaires/delete/{{this.id}}"><i class="fas fa-user-remove"></i>Remove</a>
     </div>
+
 </div>

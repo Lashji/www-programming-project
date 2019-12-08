@@ -18,7 +18,11 @@ module.exports = {
         })
     },
     async show(request, response) {
-
+        const questionnaire = await Questionnaire.findById(request.params.id)
+        console.log("questionnaire = ", questionnaire.id)
+        response.render("questionnaire/view_questionnaire", {
+            questionnaire
+        })
     },
     async create(request, response) {
         console.log("rendering create")
