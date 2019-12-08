@@ -21,10 +21,12 @@ module.exports = {
 
     },
     async create(request, response) {
-
+        console.log("rendering create")
+        response.render("questionnaire/create_questionnaire")
     },
     async update(request, response) {
-
+        console.log("rendering edit")
+        response.render("questionnaire/edit_questionnaire")
     },
     async delete(request, response) {
 
