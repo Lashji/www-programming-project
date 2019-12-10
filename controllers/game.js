@@ -4,7 +4,7 @@ module.exports = {
     async getRandomQuestionnaire(request, response) {
         let questionnaire = await Questionnaire.find()
 
-        console.log("GETTING RANDOM")
+        console.log("Getting random question ", questionnaire)
         if (questionnaire) {
             response.json(questionnaire[0]);
         } else {

@@ -7,6 +7,9 @@ const csrfProtection = csurf({
     cookie: false
 });
 
+router.use(auth.ensureAuthenticated);
+
+
 const router = express.Router();
 const GameController = require('../controllers/game');
 
