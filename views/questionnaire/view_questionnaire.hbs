@@ -1,1 +1,35 @@
-<h1>Viewing questionnaire id: {{questionnaire.id}}</h1>
+<div class="card">
+    <div class="card-header">
+
+        <h5 class="card-title">{{questionnaire.title}}</h5>
+
+    </div>
+    <div class="card-body">
+        <ul>
+            {{#each questionnaire.questions}}
+            <li>
+                <h5>{{this.title}}</h5>
+                <table>
+                    <tr>
+                        <th>Option</th>
+                        <th>Correctness</th>
+                        <th>Hint</th>
+                    </tr>
+                    {{#each this.options}}
+                    <tr>
+                        <td>{{this.option}}</td>
+                        <td>{{this.correctness}}</td>
+                        <td>{{this.hint}}</td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+    <div class="card-footer">
+        <h5 class="card-title">Submissions: {{this.submissions}}</h5>
+        <a class="btn btn-success" href="/questionnaires/edit/{{this.id}}"><i class="fas fa-user-edit"></i>Edit</a>
+        <a class="btn btn-danger" href="/questionnaires/delete/{{this.id}}"><i class="fas fa-user-remove"></i>Remove</a>
+    </div>
+</div>
