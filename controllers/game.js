@@ -6,9 +6,10 @@ module.exports = {
 
         console.log("Getting random question ", questionnaire)
         if (questionnaire) {
-            response.json(questionnaire[0]);
+            let random = questionnaire[Math.floor(Math.random() * questionnaire.length)]
+            response.json(random);
         } else {
-            response.send("not found")
+            response.status(404).end("Not found")
         }
     }
 }
