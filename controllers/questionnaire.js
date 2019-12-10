@@ -36,7 +36,7 @@ module.exports = {
 
     },
     processCreate(request, response) {
-
+        console.log("procesCreate = ", request.body)
     },
     processUpdate(request, response) {
 

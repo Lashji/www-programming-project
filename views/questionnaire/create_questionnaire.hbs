@@ -1,8 +1,62 @@
 <h1>CREATE NEW QUESTIONNAIRE</h1>
+<div class="card">
 
-<div class="create-form">
 
-    <input type="text" id="name" name="name">
+    <div class="create-form">
+        <form action="/questionnaiers/new" method="POST">
+            <div class="card-header">
 
-    <button type="submit" name="submitBtn" id="submitBtn"></button>
+                <label for="title">Title: </label>
+                <input class="form-control" type="text" id="title" name="title" minlength="1" maxlength="100" required>
+            </div>
+            <div class="card-body">
+
+                <div id="create-questionnaire-hook">
+                    <label for="question-title">Question title: </label>
+                    <input class='form-control' type='text' name='question-title' id='question-title'>
+                    <div class="form-group">
+                        <label for="options-list">Options:</label>
+                        <ul id="options-list" name="options-list" class="list-group">
+
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <div id='create-option-hook'>
+                                    <label for="option0">Option: </label>
+                                    <input class="form-control" type="text" name="option0" id="option0">
+                                    <label for="hint0">Hint (optional): </label>
+                                    <input class="form-control" type="text" name="hint0" id="hint0">
+                                    <input class="radio-inline" value="true" type="radio" name="option0-r"
+                                        id="option-r-0-true">
+                                    <label for="option-r-0-true">True</label>
+                                    <input class="radio-inline" value="false" type="radio" name="option0-r"
+                                        id="option-r-0-false">
+                                    <label for="option-r-0-false">False</label>
+                                    <button type="button" class="btn btn-block btn-success"
+                                        id="create-new-option-button">Add
+                                        option
+                                        <i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card-footer">
+
+                <div class="form-group form-buttons">
+                    <button type="button" id="create-new-question-btn" class="btn btn-block btn-success">Create new
+                        Question
+                        <i class="fa fa-plus"></i></button>
+                    <button type="submit" class="btn btn-block btn-primary" name="submitBtn" id="submitBtn">Submit new
+                        Questionnaire!</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
 </div>
