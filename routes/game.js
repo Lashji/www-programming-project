@@ -10,7 +10,8 @@ const csrfProtection = csurf({
 const router = express.Router();
 const GameController = require('../controllers/game');
 
-router.get('/game/random', csrfProtection, GameController.getRandomQuestionnaire)
+// console.log("gamecontroller", GameController)
+router.get('/random', csrfProtection, GameController.getRandomQuestionnaire)
 
 
 module.exports = router;
