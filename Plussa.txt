@@ -1,0 +1,37 @@
+Plussa ja A+ ja graderit
+
+
+LukioPlussa: prepares free digital textbooks for natural sciences, i.e., mathematics, chemistry, and physics. In addition, the basic skills for information technology are provided.
+
+MinimalViableGrader: Yksinkertaisin mahdollinen peli, joka noudattaa A+ protokollaa. MVG on eräänlainen grader.
+
+Grader: Grader on ohjelma, jolle annetaan vastauksia. Grader tarkastaa, ovatko vastaukset oikein. Grader antaa oikeista vastauksista pisteitä vastaajalle.
+
+Bubble game graderinä: pelissä käyttäjä valitsee vastauksen useista vaihtoehdoista, ja painaa "Grade" - nappulaa, jolloin peli alkaa arvostella vastauksia ja antaa pisteitä. Kun käyttäjä on painanut "Grade" - nappulaa, ohjelma lähettää käyttäjän pisteet A+ systeemiin HTML-headissä META tageinä.
+
+A+ protokolla: 
+
+A+ Systeemi: 
+
+A+ Prosessi: 
+
+Kun peli alkaa, kyselykokelma tulee lukea tietokannasta.
+Kysely voi esimerkiksi antaa vaihtoehdot A, B, C ja D. Peli voi tehdä vaihtoehtojen järjestyksestä satunnaisen. Ohjelma voi tehdä vastauksen valinnasta pelin (meillä siis se tetris-tyyppinen systeemi, mistä puhuttiin). Käyttäjän antamat vastaukset tulee lähettää A+ prosessin mukaisesti.
+
+Vaihtoehtoisesti peli voi antaa suoritettavaa koodia uusien vaihtoehtojen generoimiseksi. Esimerkiksi bubble gamen yhteenlasku vaihtoehdot voi generoida lennossa. Pelin aikana pelin tulee pitää kirjaa pisteistä, ja pelin loputtua, points/max_points lähetetään headereissä A+ systeemiin linkin takana olevan kuvauksen mukaisesti:
+https://github.com/Aalto-LeTech/a-plus/blob/master/doc/GRADERS.md
+
+Pelin tulee noudattaa A+ Protokollaa seuraavasti:
+    ✓ may have div with "exercise" id
+    ✓ must have a form with POST method
+    ✓ must have a form with submit button
+    ✓ the submit button must have id "grade"
+
+
+Testausvaiheessa testtataan toimiiko arvostelu A+ protokollan mukaisesti. Arvostelun tulee täyttää seuraavat vaatimukset:
+    ✓ must have meta field "status" in head
+    ✓ should have meta field "max_points" in head
+    ✓ must have meta field "points" in head
+    ✓ meta field "points" in head must be less than max_points
+    ✓ should have meta field "DC.Description" in head
+    ✓ should have meta field "DC.Title" in head
