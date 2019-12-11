@@ -3,56 +3,64 @@
 
 
     <div class="create-form">
-        <form action="/questionnaiers/new" method="POST">
+        <form id="create-form" action="/questionnaires/new" method="POST">
             <div class="card-header">
 
                 <label for="title">Title: </label>
                 <input class="form-control" type="text" id="title" name="title" minlength="1" maxlength="100" required>
+
+                <label for="title">Max points: </label>
+                <input class="form-control" type="number" id="points" name="points" required>
             </div>
-            <div class="card-body">
+            <div class=" card-body">
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col-8">
+                        <div id="create-questionnaire-hook">
+                            <div class="questionnaireContainer">
+                                <label for="question-title">Question title: </label>
+                                <input class='form-control' type='text' name='question-title' id='question-title'>
+                                <div class="form-group">
+                                    <label id="option-label" for="options-list">Options:</label>
+                                    <ul id="optionHook" name="options-list" class="list-group">
 
-                <div id="create-questionnaire-hook">
-                    <label for="question-title">Question title: </label>
-                    <input class='form-control' type='text' name='question-title' id='question-title'>
-                    <div class="form-group">
-                        <label id="option-label" for="options-list">Options:</label>
-                        <ul id="optionHook" name="options-list" class="list-group">
-
-                        </ul>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="form-group">
-                                <div id='create-option-hook'>
-                                    <label for="option">Option: </label>
-                                    <input id="option-input" class="form-control" type="text" name="option" id="option"
-                                        required>
-                                    <label for="hint">Hint (optional): </label>
-                                    <input class="form-control" type="text" name="hint" id="hint">
-                                    <input class="radio-inline" value="true" type="radio" name="optionRadio"
-                                        id="optionRadio-true" required>
-                                    <label for="optionRadio-true">True</label>
-                                    <input class="radio-inline" value="false" type="radio" name="optionRadio"
-                                        id="optionRadio-false" required>
-                                    <label for="optionRadio-false">False</label>
-                                    <button id="add-option-btn" type="button" class="btn btn-block btn-success"
-                                        id="create-new-option-button">Add
-                                        option
-                                        <i class="fa fa-plus"></i></button>
+                                    </ul>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <div id='create-option-hook'>
+                                                <label for="option">Option: </label>
+                                                <input id="option-input" class="form-control" type="text" name="option"
+                                                    id="option" required>
+                                                <label for="hint">Hint (optional): </label>
+                                                <input class="form-control" type="text" name="hint" id="hint">
+                                                <input class="radio-inline" value="true" type="radio" name="optionRadio"
+                                                    id="optionRadio-true" required>
+                                                <label for="optionRadio-true">True</label>
+                                                <input class="radio-inline" value="false" type="radio"
+                                                    name="optionRadio" id="optionRadio-false" required>
+                                                <label for="optionRadio-false">False</label>
+                                                <button id="add-option-btn" type="button"
+                                                    class="btn btn-block btn-success" id="create-new-option-button">Add
+                                                    option
+                                                    <i class="fa fa-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
-            <div class="card-footer">
 
+            <div class="card-footer">
                 <div class="form-group form-buttons">
                     <button type="button" id="create-new-question-btn" class="btn btn-block btn-success">Create new
                         Question
                         <i class="fa fa-plus"></i></button>
-                    <button type="submit" class="btn btn-block btn-primary" name="submitBtn" id="submitBtn">Submit new
+                    <button type="submit" class="btn btn-block btn-primary" name="submitBtn">Submit new
                         Questionnaire!</button>
                 </div>
             </div>
