@@ -15,27 +15,27 @@
                     <label for="question-title">Question title: </label>
                     <input class='form-control' type='text' name='question-title' id='question-title'>
                     <div class="form-group">
-                        <label for="options-list">Options:</label>
-                        <ul id="options-list" name="options-list" class="list-group">
+                        <label id="option-label" for="options-list">Options:</label>
+                        <ul id="optionHook" name="options-list" class="list-group">
 
                         </ul>
                     </div>
                     <div class="card">
                         <div class="card-body">
-
                             <div class="form-group">
                                 <div id='create-option-hook'>
-                                    <label for="option0">Option: </label>
-                                    <input class="form-control" type="text" name="option0" id="option0">
-                                    <label for="hint0">Hint (optional): </label>
-                                    <input class="form-control" type="text" name="hint0" id="hint0">
-                                    <input class="radio-inline" value="true" type="radio" name="option0-r"
-                                        id="option-r-0-true">
-                                    <label for="option-r-0-true">True</label>
-                                    <input class="radio-inline" value="false" type="radio" name="option0-r"
-                                        id="option-r-0-false">
-                                    <label for="option-r-0-false">False</label>
-                                    <button type="button" class="btn btn-block btn-success"
+                                    <label for="option">Option: </label>
+                                    <input id="option-input" class="form-control" type="text" name="option" id="option"
+                                        required>
+                                    <label for="hint">Hint (optional): </label>
+                                    <input class="form-control" type="text" name="hint" id="hint">
+                                    <input class="radio-inline" value="true" type="radio" name="optionRadio"
+                                        id="optionRadio-true" required>
+                                    <label for="optionRadio-true">True</label>
+                                    <input class="radio-inline" value="false" type="radio" name="optionRadio"
+                                        id="optionRadio-false" required>
+                                    <label for="optionRadio-false">False</label>
+                                    <button id="add-option-btn" type="button" class="btn btn-block btn-success"
                                         id="create-new-option-button">Add
                                         option
                                         <i class="fa fa-plus"></i></button>
@@ -60,3 +60,4 @@
     </div>
 
 </div>
+{{>javascript}}
