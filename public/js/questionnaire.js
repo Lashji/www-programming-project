@@ -24,8 +24,8 @@ const questionTemplate = (questionCount) =>
             <label for="questiontitle">Question title: </label>
             <input class='form-control' type='text' name='questiontitle[${questionCount}]' id='question-title'>
 
-            <label for="points[${questionCount}}">Max points: </label>
-                <input class="form-control" type="number" id="points${questionCount}" name="points${questionCount}" required>
+            <label for="points${questionCount}}">Max points: </label>
+                <input class="form-control" type="number" id="points${questionCount}" name="points[${questionCount}]" required>
 
             <div class="form-group">
                 <label id="option-label" for="options-list">Options:</label>

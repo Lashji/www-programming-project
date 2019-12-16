@@ -2,25 +2,64 @@
 
 const Questionnaire = require('../models/questionnaire');
 // questiontitle includes all the titles submitted by the form
-const createNewQuestionnaire = ({ title, points, questiontitle, option }) => {
+const createNewQuestionnaire = ({
+    title,
+    points,
+    questiontitle,
+    option
+}) => {
     const newQuestionnaire = {
         title: title,
-        points: points,
-        questions: parseQuestions(questiontitle, option),
+        questions: parseQuestions(questiontitle, points, option[0]),
     };
 
-    console.log('createNewQuestionnaire = ', newQuestionnaire);
     return newQuestionnaire;
 };
 
-const parseQuestions = (questiontitles, option) => {
-    console.log('titles => ', questiontitles);
-    console.log('parsing => ', option);
+const parseQuestions = (questiontitles, points, option) => {
+    let questions = [];
+    console.log("Whole options => ", option)
 
-    let questions = {};
+    // If there is only 1 question data comes as a string instead of a array
+    // so changing it to array to simplify things
+    if (!Array.isArray(questiontitles)) {
+        let tmp = questiontitles
+        questiontitles = []
+        questiontitles.push(tmp)
+    }
+
+
+    // If there is only 1 question data comes as a string instead of a array
+    // so changing it to array to simplify things
+    if (!Array.isArray(points)) {
+        let tmp = points
+        points = []
+        points.push(tmp)
+    }
+
 
     for (let i in questiontitles) {
+        let q = {
+            title: questiontitles[i],
+            maxPoints: points[i],
+            options: [],
+        };
+
+        for (let j in option) {
+            let opt = option[j]
+            let tmp = {
+                option: opt[0],
+                hint: opt[1],
+                correctness: opt[2] === 'true',
+            }
+
+            console.log("tmp option => ", tmp);
+            q.options.push(tmp);
+        }
+        questions.push(q);
     }
+    console.log('parseQuestions returning => ', questions);
+    return questions;
 };
 
 module.exports = {
@@ -57,11 +96,16 @@ module.exports = {
     async processCreate(request, response) {
         console.log('procesCreate = ', request.body);
 
-        const data = createNewQuestionnaire(request.body);
+        let data = createNewQuestionnaire(request.body);
 
-        const questionnaire = await Questionnaire.find()[0];
-        // const questionnaire = Questionnaire.create();
-        console.log('found questionnaire = ', questionnaire);
+        const newQuestionnaire = new Questionnaire()
+
+        newQuestionnaire.title = data.title
+        newQuestionnaire.submissions = 1
+        newQuestionnaire.questions = data.questions
+        console.log("saving new Questionnaire => ", newQuestionnaire)
+        let questionnaire = await newQuestionnaire.save()
+
 
         response.render('questionnaire/view_questionnaire', {
             questionnaire,
