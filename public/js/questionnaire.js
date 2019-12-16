@@ -61,8 +61,7 @@ const questionTemplate = (questionCount) =>
 
 const optionTemplate = ({ title, hint, selected }) => {
     // for templateLiteral
-    let selectedTrue = selected ? 'true' : 'false';
-    let selectedFalse = selected ? 'false' : 'true';
+    let selectedTrue = selected === 0;
 
     return `
     <div class='form-group row'>
@@ -77,10 +76,14 @@ const optionTemplate = ({ title, hint, selected }) => {
 
 
     <div class='col'>
-    <input type='radio' name='option[${questionCount}][${optionCount}]' value='true' checked=${selectedTrue} >
+    <input type='radio' name='option[${questionCount}][${optionCount}]' value='true' ${
+        selectedTrue ? 'checked=true' : ''
+    } >
     <label for='r-${optionCount}'> True</label>
 
-    <input type='radio' name='option[${questionCount}][${optionCount}]' value='false' checked=${selectedFalse}>
+    <input type='radio' name='option[${questionCount}][${optionCount}]' value='false' ${
+        !selectedTrue ? 'checked=true' : ''
+    }>
     <label for='r-${optionCount}'> False</label>
     </div>
 
@@ -129,7 +132,7 @@ const getValues = (questionId) => {
     return {
         title: optionTitle.value,
         hint: hint.value,
-        selected: radioBtn.checked,
+        selected: radioButtons[0].checked ? 0 : 1,
     };
 };
 
