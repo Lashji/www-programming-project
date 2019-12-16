@@ -12,6 +12,10 @@ if (optionCount == 0) {
     optionsLabel.innerHTML = "<h4>Options: </h4><span>No options added yet</span>"
 }
 
+addOptionBtn.addEventListener('click', () => {
+    addOption(optionHook, addOptionBtn.value)
+})
+
 
 const questionTemplate = (questionCount) =>
     `
@@ -31,17 +35,16 @@ const questionTemplate = (questionCount) =>
                     <div class="form-group">
                         <div id='create-option-hook'>
                             <label for="option">Option: </label>
-                            <input id="option-input" class="form-control" type="text" name="option"
-                                id="option" required>
+                            <input id="option-input${questionCount}" class="form-control" type="text required>
                             <label for="hint">Hint (optional): </label>
-                            <input class="form-control" type="text" name="hint" id="hint">
-                            <input class="radio-inline" value="true" type="radio" name="optionRadio"
+                            <input class="form-control" type="text" id="hint${questionCount}">
+                            <input class="radio-inline" value="true" type="radio" name="optionRadio${questionCount}"
                                 id="optionRadio-true" required>
                             <label for="optionRadio-true">True</label>
-                            <input class="radio-inline" value="false" type="radio" name="optionRadio"
+                            <input class="radio-inline" value="false" type="radio" name="optionRadio${questionCount}"
                                 id="optionRadio-false" required>
                             <label for="optionRadio-false">False</label>
-                            <button id="add-option-btn${questionCount}" type="button" class="btn btn-block btn-success"
+                            <button id="add-option-btn${questionCount}" type="button" value='${questionCount}' class="btn btn-block btn-success"
                                 id="create-new-option-button">Add
                                 option
                                 <i class="fa fa-plus"></i></button>
@@ -60,26 +63,26 @@ const optionTemplate = ({
 }) => {
 
     // for templateLiteral
-    let t = "true"
-    let f = "false"
+    let selectedTrue = selected ? "true" : "false"
+    let selectedFalse = selected ? "false" : "true"
 
     return `
     <div class='form-group row'>
 
     <div class='col'>
-    <input class="form-control" type='text' name='option[${optionCount}]' id='option${optionCount}' value='${title}'>
+    <input class="form-control" type='text' name='option[${questionCount}][${optionCount}]' id='optionq${questionCount}-o${optionCount}' value='${title}'>
     </div>
 
     <div class='col'>
-    <input class="form-control" type='text' name='option[${optionCount}]' id='hint${optionCount}' value='${hint}'>
+    <input class="form-control" type='text' name='option[${questionCount}][${optionCount}]' id='hint-q${questionCount}-o${optionCount}' value='${hint}'>
     </div>
 
 
     <div class='col'>
-    <input type='radio' name='option[${optionCount}]' value='true' checked='${!selected?t:f}' >
+    <input type='radio' name='option[${questionCount}][${optionCount}]' value='true' checked='${selectedTrue}' >
     <label for='r-${optionCount}'> True</label>
 
-    <input type='radio' name='option[${optionCount}]' value='false' checked='${selected?t:f}'>
+    <input type='radio' name='option[${questionCount}][${optionCount}]' value='false' checked='${selectedFalse}'>
     <label for='r-${optionCount}'> False</label>
     </div>
 
@@ -100,20 +103,18 @@ createBtn.addEventListener('click', () => {
     console.log("Hook ", newhook)
 
     newBtn.addEventListener('click', () => {
-        addOption(newhook)
+        addOption(newhook, newBtn.value)
     })
 
 })
 
 
-addOptionBtn.addEventListener('click', () => {
-    addOption(optionHook)
-})
 
 
-const addOption = (hook) => {
+const addOption = (hook, questionId) => {
+    console.log("hook = ", hook)
     console.log("adding option")
-    let values = getValues()
+    let values = getValues(questionId)
     console.log("Values ", values)
     let html = document.createElement("div")
     html.innerHTML = optionTemplate(values)
@@ -124,11 +125,13 @@ const addOption = (hook) => {
 }
 
 
-const getValues = () => {
-    const optionTitle = document.getElementById("option-input")
-    const hint = document.getElementById("hint")
-    const radioButtons = document.getElementsByName("optionRadio")
-    console.log(radioButtons)
+const getValues = (questionId) => {
+
+    console.log("question id: ", questionId)
+    let optionTitle = document.getElementById(`option-input${questionId}`)
+    let hint = document.getElementById(`hint${questionId}`)
+    let radioButtons = document.getElementsByName(`optionRadio${questionId}`)
+    // console.log(radioButtons)
     let radioBtn
 
     for (let i = 0; i < radioButtons.length; i++) {
