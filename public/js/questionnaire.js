@@ -1,28 +1,31 @@
-const createBtn = document.getElementById("create-new-question-btn")
-const hook = document.getElementById("create-questionnaire-hook")
-const optionsList = document.getElementById("options-list")
-const optionsLabel = document.getElementById("option-label")
-const addOptionBtn = document.getElementById("add-option-btn")
-const optionHook = document.getElementById("optionHook")
-const options = []
-let optionCount = 0
-let questionCount = 0
+const createBtn = document.getElementById('create-new-question-btn');
+const hook = document.getElementById('create-questionnaire-hook');
+const optionsList = document.getElementById('options-list');
+const optionsLabel = document.getElementById('option-label');
+const addOptionBtn = document.getElementById('add-option-btn');
+const optionHook = document.getElementById('optionHook');
+const options = [];
+let optionCount = 0;
+let questionCount = 0;
 
 if (optionCount == 0) {
-    optionsLabel.innerHTML = "<h4>Options: </h4><span>No options added yet</span>"
+    optionsLabel.innerHTML =
+        '<h4>Options: </h4><span>No options added yet</span>';
 }
 
 addOptionBtn.addEventListener('click', () => {
-    addOption(optionHook, addOptionBtn.value)
-})
-
+    addOption(optionHook, addOptionBtn.value);
+});
 
 const questionTemplate = (questionCount) =>
     `
         <div class="questionnaireContainer">
 
-            <label for="question-title">Question title: </label>
-            <input class='form-control' type='text' name='question-title[${questionCount}]' id='question-title'>
+            <label for="questiontitle">Question title: </label>
+            <input class='form-control' type='text' name='questiontitle[${questionCount}]' id='question-title'>
+
+            <label for="points[${questionCount}}">Max points: </label>
+                <input class="form-control" type="number" id="points${questionCount}" name="points${questionCount}" required>
 
             <div class="form-group">
                 <label id="option-label" for="options-list">Options:</label>
@@ -54,17 +57,12 @@ const questionTemplate = (questionCount) =>
                 </div>
             </div>
         </div>
-`
+`;
 
-const optionTemplate = ({
-    title,
-    hint,
-    selected
-}) => {
-
+const optionTemplate = ({ title, hint, selected }) => {
     // for templateLiteral
-    let selectedTrue = selected ? "true" : "false"
-    let selectedFalse = selected ? "true" : "false"
+    let selectedTrue = selected ? 'true' : 'false';
+    let selectedFalse = selected ? 'false' : 'true';
 
     return `
     <div class='form-group row'>
@@ -79,83 +77,74 @@ const optionTemplate = ({
 
 
     <div class='col'>
-    <input type='radio' name='option[${questionCount}][${optionCount}]' value='true' checked='${selectedTrue}' >
+    <input type='radio' name='option[${questionCount}][${optionCount}]' value='true' checked=${selectedTrue} >
     <label for='r-${optionCount}'> True</label>
 
-    <input type='radio' name='option[${questionCount}][${optionCount}]' value='false' checked='${selectedFalse}'>
+    <input type='radio' name='option[${questionCount}][${optionCount}]' value='false' checked=${selectedFalse}>
     <label for='r-${optionCount}'> False</label>
     </div>
 
     </div>
-    `
-}
+    `;
+};
 
 createBtn.addEventListener('click', () => {
-    questionCount++
+    questionCount++;
 
-    let html = document.createElement('div')
-    html.innerHTML = questionTemplate(questionCount)
-    hook.appendChild(html)
-    let newBtn = document.getElementById(`add-option-btn${questionCount}`)
-    let newhook = document.getElementById(`optionHook${questionCount}`)
+    let html = document.createElement('div');
+    html.innerHTML = questionTemplate(questionCount);
+    hook.appendChild(html);
+    let newBtn = document.getElementById(`add-option-btn${questionCount}`);
+    let newhook = document.getElementById(`optionHook${questionCount}`);
 
     newBtn.addEventListener('click', () => {
-        addOption(newhook, newBtn.value)
-    })
-
-})
-
-
-
+        addOption(newhook, newBtn.value);
+    });
+});
 
 const addOption = (hook, questionId) => {
-    console.log("adding option")
-    let values = getValues(questionId)
-    let html = document.createElement("div")
-    html.innerHTML = optionTemplate(values)
-    hook.appendChild(html)
+    console.log('adding option');
+    let values = getValues(questionId);
+    let html = document.createElement('div');
+    html.innerHTML = optionTemplate(values);
+    hook.appendChild(html);
     optionCount++;
-    optionsLabel.innerHTML = "<h4>Options: </h4>"
-
-}
-
+    optionsLabel.innerHTML = '<h4>Options: </h4>';
+};
 
 const getValues = (questionId) => {
-
-    console.log("question id: ", questionId)
-    let optionTitle = document.getElementById(`option-input${questionId}`)
-    let hint = document.getElementById(`hint${questionId}`)
-    let radioButtons = document.getElementsByName(`optionRadio${questionId}`)
-    let radioBtn
+    console.log('question id: ', questionId);
+    let optionTitle = document.getElementById(`option-input${questionId}`);
+    let hint = document.getElementById(`hint${questionId}`);
+    let radioButtons = document.getElementsByName(`optionRadio${questionId}`);
+    let radioBtn;
 
     // TODO: Fix this at some point. Im checking the radiobutton check twice
     for (let i = 0; i < radioButtons.length; i++) {
         if (radioButtons[i].checked) {
-            radioBtn = radioButtons[i]
+            radioBtn = radioButtons[i];
         }
     }
 
     return {
         title: optionTitle.value,
         hint: hint.value,
-        selected: radioBtn.checked
-    }
-}
-
-
+        selected: radioBtn.checked,
+    };
+};
 
 window.onload = () => {
-    const form = document.getElementById("create-form")
+    const form = document.getElementById('create-form');
 
     form.onsubmit = (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
-        let rbuttons = document.getElementsByClassName("addOptionRbutton")
+        let rbuttons = document.getElementsByClassName('addOptionRbutton');
         for (let i in rbuttons) {
-            if (rbuttons[i].tagName === "INPUT")
-                rbuttons[i].removeAttribute('name')
+            if (rbuttons[i].tagName === 'INPUT')
+                rbuttons[i].removeAttribute('name');
         }
 
-        e.currentTarget.submit()
-    }
-}
+        e.currentTarget.submit();
+    };
+};

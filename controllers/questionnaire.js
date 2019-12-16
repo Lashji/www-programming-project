@@ -1,17 +1,29 @@
 'use strict';
 
 const Questionnaire = require('../models/questionnaire');
+// questiontitle includes all the titles submitted by the form
+const createNewQuestionnaire = ({ title, points, questiontitle, option }) => {
+    const newQuestionnaire = {
+        title: title,
+        points: points,
+        questions: parseQuestions(questiontitle, option),
+    };
 
-
-const createNewQuestionnaire = (data) => {
-
-    // console.log(data);
-
+    console.log('createNewQuestionnaire = ', newQuestionnaire);
+    return newQuestionnaire;
 };
 
+const parseQuestions = (questiontitles, option) => {
+    console.log('titles => ', questiontitles);
+    console.log('parsing => ', option);
+
+    let questions = {};
+
+    for (let i in questiontitles) {
+    }
+};
 
 module.exports = {
-
     /**
      * Returns list of users
      * @param {Object} request is express request object
@@ -23,14 +35,14 @@ module.exports = {
             .exec();
         console.log('listing', questionnaires);
         response.render('questionnaire/list_questionnaires', {
-            questionnaires
+            questionnaires,
         });
     },
     async show(request, response) {
         const questionnaire = await Questionnaire.findById(request.params.id);
         console.log('questionnaire = ', questionnaire.id);
         response.render('questionnaire/view_questionnaire', {
-            questionnaire
+            questionnaire,
         });
     },
     async create(request, response) {
@@ -41,26 +53,20 @@ module.exports = {
         console.log('rendering edit');
         response.render('questionnaire/edit_questionnaire');
     },
-    async delete(request, response) {
-
-    },
+    async delete(request, response) {},
     async processCreate(request, response) {
         console.log('procesCreate = ', request.body);
 
         const data = createNewQuestionnaire(request.body);
+
         const questionnaire = await Questionnaire.find()[0];
         // const questionnaire = Questionnaire.create();
-
+        console.log('found questionnaire = ', questionnaire);
 
         response.render('questionnaire/view_questionnaire', {
-            questionnaire
+            questionnaire,
         });
     },
-    processUpdate(request, response) {
-
-    },
-    processDelete(request, response) {
-
-    }
-
+    processUpdate(request, response) {},
+    processDelete(request, response) {},
 };

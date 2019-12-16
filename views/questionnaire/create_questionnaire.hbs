@@ -9,8 +9,6 @@
                 <label for="title">Title: </label>
                 <input class="form-control" type="text" id="title" name="title" minlength="1" maxlength="100" required>
 
-                <label for="title">Max points: </label>
-                <input class="form-control" type="number" id="points" name="points" required>
             </div>
             <div class=" card-body">
                 <div class="row">
@@ -18,8 +16,12 @@
                     <div class="col-8">
                         <div id="create-questionnaire-hook">
                             <div class="questionnaireContainer">
-                                <label for="question-title">Question title: </label>
-                                <input class='form-control' type='text' name='question-title[0]' id='question-title'>
+                                <label for="questiontitle">Question title: </label>
+                                <input class='form-control' type='text' name='questiontitle' id='question-title'>
+
+                                <label for="points0">Max points: </label>
+                                <input class="form-control" type="number" id="points" name="points0" required>
+
                                 <div class="form-group">
                                     <label id="option-label" for="options-list">Options:</label>
                                     <ul id="optionHook" name="options-list" class="list-group">
