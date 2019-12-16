@@ -22,7 +22,7 @@ const questionTemplate = (questionCount) =>
         <div class="questionnaireContainer">
 
             <label for="question-title">Question title: </label>
-            <input class='form-control' type='text' name='question-title' id='question-title'>
+            <input class='form-control' type='text' name='question-title[${questionCount}]' id='question-title'>
 
             <div class="form-group">
                 <label id="option-label" for="options-list">Options:</label>
@@ -35,13 +35,13 @@ const questionTemplate = (questionCount) =>
                     <div class="form-group">
                         <div id='create-option-hook'>
                             <label for="option">Option: </label>
-                            <input id="option-input${questionCount}" class="form-control" type="text required>
+                            <input id="option-input${questionCount}" class="form-control" type="text" required>
                             <label for="hint">Hint (optional): </label>
                             <input class="form-control" type="text" id="hint${questionCount}">
-                            <input class="radio-inline" value="true" type="radio" name="optionRadio${questionCount}"
-                                id="optionRadio-true" required>
+                            <input class="radio-inline addOptionRbutton" value="true" type="radio" name="optionRadio${questionCount}"
+                                id="optionRadio-true" checked="true" required>
                             <label for="optionRadio-true">True</label>
-                            <input class="radio-inline" value="false" type="radio" name="optionRadio${questionCount}"
+                            <input class="radio-inline addOptionRbutton" value="false" type="radio" name="optionRadio${questionCount}"
                                 id="optionRadio-false" required>
                             <label for="optionRadio-false">False</label>
                             <button id="add-option-btn${questionCount}" type="button" value='${questionCount}' class="btn btn-block btn-success"
@@ -64,7 +64,7 @@ const optionTemplate = ({
 
     // for templateLiteral
     let selectedTrue = selected ? "true" : "false"
-    let selectedFalse = selected ? "false" : "true"
+    let selectedFalse = selected ? "true" : "false"
 
     return `
     <div class='form-group row'>
@@ -93,14 +93,11 @@ const optionTemplate = ({
 createBtn.addEventListener('click', () => {
     questionCount++
 
-    console.log("questionCount = ", questionCount)
     let html = document.createElement('div')
     html.innerHTML = questionTemplate(questionCount)
     hook.appendChild(html)
     let newBtn = document.getElementById(`add-option-btn${questionCount}`)
     let newhook = document.getElementById(`optionHook${questionCount}`)
-    console.log("newBTN= ", newBtn)
-    console.log("Hook ", newhook)
 
     newBtn.addEventListener('click', () => {
         addOption(newhook, newBtn.value)
@@ -112,10 +109,8 @@ createBtn.addEventListener('click', () => {
 
 
 const addOption = (hook, questionId) => {
-    console.log("hook = ", hook)
     console.log("adding option")
     let values = getValues(questionId)
-    console.log("Values ", values)
     let html = document.createElement("div")
     html.innerHTML = optionTemplate(values)
     hook.appendChild(html)
@@ -131,9 +126,9 @@ const getValues = (questionId) => {
     let optionTitle = document.getElementById(`option-input${questionId}`)
     let hint = document.getElementById(`hint${questionId}`)
     let radioButtons = document.getElementsByName(`optionRadio${questionId}`)
-    // console.log(radioButtons)
     let radioBtn
 
+    // TODO: Fix this at some point. Im checking the radiobutton check twice
     for (let i = 0; i < radioButtons.length; i++) {
         if (radioButtons[i].checked) {
             radioBtn = radioButtons[i]
@@ -149,15 +144,18 @@ const getValues = (questionId) => {
 
 
 
-// window.onload = () => {
-//     const form = document.getElementById("create-form")
+window.onload = () => {
+    const form = document.getElementById("create-form")
 
-//     form.onsubmit = (e) => {
-//         e.preventDefault()
+    form.onsubmit = (e) => {
+        e.preventDefault()
 
-//         console.log("e = ", e)
-//         console.log("form = ", form)
+        let rbuttons = document.getElementsByClassName("addOptionRbutton")
+        for (let i in rbuttons) {
+            if (rbuttons[i].tagName === "INPUT")
+                rbuttons[i].removeAttribute('name')
+        }
 
-//         e.currentTarget.submit()
-//     }
-// }
+        e.currentTarget.submit()
+    }
+}
