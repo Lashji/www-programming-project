@@ -8,18 +8,11 @@ const options = [];
 let optionCount = 0;
 let questionCount = 0;
 
-if (optionCount == 0) {
-    optionsLabel.innerHTML =
-        '<h4>Options: </h4><span>No options added yet</span>';
-}
 
-addOptionBtn.addEventListener('click', () => {
-    addOption(optionHook, addOptionBtn.value);
-});
 
 const questionTemplate = (questionCount) =>
     `
-        <div class="questionnaireContainer">
+        <div class="questionnaireContainer" id="questionRow${questionCount}">
 
             <label for="questiontitle">Question title: </label>
             <input class='form-control' type='text' name='questiontitle[${questionCount}]' id='question-title'>
@@ -47,10 +40,17 @@ const questionTemplate = (questionCount) =>
                             <input class="radio-inline addOptionRbutton" value="false" type="radio" name="optionRadio${questionCount}"
                                 id="optionRadio-false" required>
                             <label for="optionRadio-false">False</label>
-                            <button id="add-option-btn${questionCount}" type="button" value='${questionCount}' class="btn btn-block btn-success"
-                                id="create-new-option-button">Add
-                                option
-                                <i class="fa fa-plus"></i></button>
+                            <div class="row">
+                                <div class="col">
+                                    <button id="add-option-btn${questionCount}" type="button" value='${questionCount}' class="btn btn-block btn-success"
+                                    id="create-new-option-button">Add
+                                    option
+                                    <i class="fa fa-plus"></i></button>
+                                    </div>
+                                    <div class="col">
+                                    <button type="button" id="removeq${questionCount}" value="${questionCount}" class="btn btn-danger">Delete question <i class="fa fa-minus-square"></i></button>
+                                   </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -104,7 +104,7 @@ createBtn.addEventListener('click', () => {
     hook.appendChild(html);
     let newBtn = document.getElementById(`add-option-btn${questionCount}`);
     let newhook = document.getElementById(`optionHook${questionCount}`);
-
+    addDeleteQuestionFunctionality()
     newBtn.addEventListener('click', () => {
         addOption(newhook, newBtn.value);
     });
@@ -118,13 +118,21 @@ const addOption = (hook, questionId) => {
     let html = document.createElement('div');
     html.innerHTML = optionTemplate(values);
     hook.appendChild(html);
-    addDeleteButtonFunctionality()
+    addDeleteOptionFunctionality()
     optionCount++;
-    optionsLabel.innerHTML = '<h4>Options: </h4>';
 };
 
+const addDeleteQuestionFunctionality = () => {
+    const btn = document.getElementById(`removeq${questionCount}`)
+    const row = document.getElementById(`questionRow${questionCount}`)
+    console.log("removeBTn", btn)
 
-const addDeleteButtonFunctionality = () => {
+    btn.addEventListener('click', () => {
+        row.parentElement.removeChild(row)
+    })
+}
+
+const addDeleteOptionFunctionality = () => {
 
     const btn = document.getElementById(`remove${optionCount}`)
     const row = document.getElementById(`optionRow${optionCount}`)
