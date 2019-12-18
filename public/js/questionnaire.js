@@ -59,7 +59,11 @@ const questionTemplate = (questionCount) =>
         </div>
 `;
 
-const optionTemplate = ({ title, hint, selected }) => {
+const optionTemplate = ({
+    title,
+    hint,
+    selected
+}) => {
     // for templateLiteral
     let selectedTrue = selected === 0;
 
@@ -87,6 +91,7 @@ const optionTemplate = ({ title, hint, selected }) => {
     <label for='r-${optionCount}'> False</label>
     </div>
 
+    <div class='col'><button type="button" class="btn btn-danger" id="remove${questionCount}"><i class="fa fa-minus-square"></i></button></div>
     </div>
     `;
 };
