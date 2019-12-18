@@ -1,0 +1,47 @@
+{{!-- FOR editing questionnaires --}}
+<div class="questionnaireContainer" id="questionRow${questionCount}">
+
+    <label for="questiontitle">Question title: </label>
+    <input class='form-control' type='text' name='questiontitle[${questionCount}]' id='question-title'>
+
+    <label for="points${questionCount}}">Max points: </label>
+    <input class="form-control" type="number" id="points${questionCount}" name="points[${questionCount}]" required>
+
+    <div class="form-group">
+        <label id="option-label" for="options-list">Options:</label>
+        <ul id="optionHook${questionCount}" name="options-list" class="list-group">
+
+        </ul>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="form-group">
+                <div id='create-option-hook'>
+                    <label for="option">Option: </label>
+                    <input id="option-input${questionCount}" class="form-control" type="text" required>
+                    <label for="hint">Hint (optional): </label>
+                    <input class="form-control" type="text" id="hint${questionCount}">
+                    <input class="radio-inline addOptionRbutton" value="true" type="radio"
+                        name="optionRadio${questionCount}" id="optionRadio-true" checked="true" required>
+                    <label for="optionRadio-true">True</label>
+                    <input class="radio-inline addOptionRbutton" value="false" type="radio"
+                        name="optionRadio${questionCount}" id="optionRadio-false" required>
+                    <label for="optionRadio-false">False</label>
+                    <div class="row">
+                        <div class="col">
+                            <button id="add-option-btn${questionCount}" type="button" value='${questionCount}'
+                                class="btn btn-block btn-success" id="create-new-option-button">Add
+                                option
+                                <i class="fa fa-plus"></i></button>
+                        </div>
+                        <div class="col">
+                            <button type="button" id="removeq${questionCount}" value="${questionCount}"
+                                class="btn btn-danger">Delete question <i class="fa fa-minus-square"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
