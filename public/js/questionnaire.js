@@ -68,7 +68,7 @@ const optionTemplate = ({
     let selectedTrue = selected === 0;
 
     return `
-    <div class='form-group row'>
+    <div class='form-group row' id="optionRow${optionCount}">
 
     <div class='col'>
     <input class="form-control" type='text' name='option[${questionCount}][${optionCount}]' id='optionq${questionCount}-o${optionCount}' value='${title}'>
@@ -91,7 +91,7 @@ const optionTemplate = ({
     <label for='r-${optionCount}'> False</label>
     </div>
 
-    <div class='col'><button type="button" class="btn btn-danger" id="remove${questionCount}"><i class="fa fa-minus-square"></i></button></div>
+    <div class='col'><button type="button" class="btn btn-danger" value="${optionCount}" id="remove${optionCount}"><i class="fa fa-minus-square"></i></button></div>
     </div>
     `;
 };
@@ -112,13 +112,30 @@ createBtn.addEventListener('click', () => {
 
 const addOption = (hook, questionId) => {
     console.log('adding option');
+
+
     let values = getValues(questionId);
     let html = document.createElement('div');
     html.innerHTML = optionTemplate(values);
     hook.appendChild(html);
+    addDeleteButtonFunctionality()
     optionCount++;
     optionsLabel.innerHTML = '<h4>Options: </h4>';
 };
+
+
+const addDeleteButtonFunctionality = () => {
+
+    const btn = document.getElementById(`remove${optionCount}`)
+    const row = document.getElementById(`optionRow${optionCount}`)
+    console.log("removeBTn", btn)
+
+    btn.addEventListener('click', () => {
+        row.parentElement.removeChild(row)
+    })
+
+}
+
 
 const getValues = (questionId) => {
     console.log('question id: ', questionId);
@@ -153,6 +170,13 @@ window.onload = () => {
                 rbuttons[i].removeAttribute('name');
         }
 
-        e.currentTarget.submit();
+        if (validate())
+            e.currentTarget.submit();
     };
 };
+
+// TODO: Validate form input
+const validate = () => {
+
+    return true
+}
