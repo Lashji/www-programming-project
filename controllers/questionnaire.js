@@ -89,8 +89,13 @@ module.exports = {
         response.render('questionnaire/create_questionnaire');
     },
     async update(request, response) {
+
+        const q = await Questionnaire.findById(request.params.id);
+
         console.log('rendering edit');
-        response.render('questionnaire/edit_questionnaire');
+        response.render('questionnaire/edit_questionnaire', {
+            q
+        });
     },
     async delete(request, response) {},
     async processCreate(request, response) {
