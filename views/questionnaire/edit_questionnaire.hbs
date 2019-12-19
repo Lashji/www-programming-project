@@ -17,7 +17,7 @@
                         <div id="create-questionnaire-hook">
 
                             {{#each q.questions as |question index|}}
-                            {{>single_questionnaire question}}
+                            {{>single_questionnaire question.options}}
                             {{/each}}
                         </div>
                     </div>

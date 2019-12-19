@@ -1,6 +1,10 @@
 {{!-- FOR editing questionnaires --}}
+{{!-- data = q and index --}}
 <div class="questionnaireContainer" id="questionRow${questionCount}">
 
+    <p>index: {{@index}}</p>
+
+    <p>question: {{this}}</p>
     <label for="questiontitle">Question title: </label>
     <input class='form-control' type='text' name='questiontitle[${questionCount}]' id='question-title'>
 
@@ -10,7 +14,34 @@
     <div class="form-group">
         <label id="option-label" for="options-list">Options:</label>
         <ul id="optionHook${questionCount}" name="options-list" class="list-group">
+            {{#each this}}
+            <div class='form-group row' id="optionRow{{@index}}">
 
+                <div class='col'>
+                    <input class="form-control" type='text' name='option[${questionCount}][{{@index}}]'
+                        id='optionq${questionCount}-o{{@index}}' value='{{this.option}}'>
+                </div>
+
+                <div class='col'>
+                    <input class="form-control" type='text' name='option[${questionCount}][{{@index}}]'
+                        id='hint-q${questionCount}-o{{@index}}' value='{{this.hint}}'>
+                </div>
+
+
+                <div class='col'>
+                    <input type='radio' name='option[${questionCount}][{{@index}}]' value='true' ${ selectedTrue
+                        ? 'checked=true' : '' }>
+                    <label for='r-{{@index}}'> True</label>
+
+                    <input type='radio' name='option[${questionCount}][{{@index}}]' value='false' ${ !selectedTrue
+                        ? 'checked=true' : '' }>
+                    <label for='r-{{@index}}'> False</label>
+                </div>
+
+                <div class='col'><button type="button" class="btn btn-danger" value="{{@index}}"
+                        id="remove{{@index}}"><i class="fa fa-minus-square"></i></button></div>
+            </div>
+            {{/each}}
         </ul>
     </div>
     <div class="card">
