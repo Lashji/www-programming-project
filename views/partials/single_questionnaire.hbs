@@ -48,7 +48,7 @@
 
 
                 {{/if}}
-                <div class='col'><button type="button" class="btn btn-danger" value="{{@index}}"
+                <div class='col'><button type="button" class="btn optionRemoveBtn btn-danger" value="{{@index}}"
                         id="remove{{@index}}"><i class="fa fa-minus-square"></i></button></div>
             </div>
             {{/each}}
@@ -77,7 +77,8 @@
                         </div>
                         <div class="col">
                             <button type="button" id="removeq{{qindex}}" value="{{qindex}}"
-                                class="btn btn-danger">Delete question <i class="fa fa-minus-square"></i></button>
+                                class="btn questionRemoveBtn btn-danger">Delete question <i
+                                    class="fa fa-minus-square"></i></button>
                         </div>
                     </div>
                 </div>

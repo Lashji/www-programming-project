@@ -48,7 +48,7 @@ const questionTemplate = (questionCount) =>
                                     <i class="fa fa-plus"></i></button>
                                     </div>
                                     <div class="col">
-                                    <button type="button" id="removeq${questionCount}" value="${questionCount}" class="btn btn-danger">Delete question <i class="fa fa-minus-square"></i></button>
+                                    <button type="button" id="removeq${questionCount}" value="${questionCount}" class="btn questionRemoveBtn btn-danger">Delete question <i class="fa fa-minus-square"></i></button>
                                    </div>
                                 </div>
                             </div>
@@ -91,7 +91,7 @@ const optionTemplate = ({
     <label for='r-${optionCount}'> False</label>
     </div>
 
-    <div class='col'><button type="button" class="btn btn-danger" value="${optionCount}" id="remove${optionCount}"><i class="fa fa-minus-square"></i></button></div>
+    <div class='col'><button type="button" class="btn optionRemoveBtn btn-danger" value="${optionCount}" id="remove${optionCount}"><i class="fa fa-minus-square"></i></button></div>
     </div>
     `;
 };
@@ -144,6 +144,16 @@ const addDeleteOptionFunctionality = () => {
 
 }
 
+const addDeleteToBtn = (btn, optionCount) => {
+    console.log("BTN => ", btn)
+    // btn = document.getElementById(`remove${optionCount}`)
+    const row = document.getElementById(`optionRow${optionCount}`)
+
+    btn.addEventListener('click', () => {
+        row.parentElement.removeChild(row)
+    })
+
+}
 
 const getValues = (questionId) => {
     console.log('question id: ', questionId);
@@ -166,7 +176,23 @@ const getValues = (questionId) => {
     };
 };
 
+const applyButtonFunctionality = () => {
 
+    const optionBtns = document.getElementsByClassName("optionRemoveBtn")
+    const questionBtns = document.getElementsByClassName("questionRemoveBtn")
+
+    for (let i = 0; i < optionBtns.length; i++) {
+
+        if (optionBtns[i].tagName === "BUTTON") {
+            addDeleteToBtn(optionBtns[i], i)
+        }
+
+    }
+
+    // console.log("optionBtns => ", optionBtns)
+    // console.log("questionBtns =>   ", questionBtns)
+
+}
 
 
 window.onload = () => {
@@ -174,11 +200,15 @@ window.onload = () => {
     const updateform = document.getElementById('update-form');
     if (updateform) {
         console.log("updateform")
+
+        applyButtonFunctionality()
+
         updateform.onsubmit = (e) => {
             e.preventDefault();
 
             let rbuttons = document.getElementsByClassName('addOptionRbutton');
             for (let i in rbuttons) {
+                console.log("rbutton => ", rbuttons[i])
                 if (rbuttons[i].tagName === 'INPUT')
                     rbuttons[i].removeAttribute('name');
             }

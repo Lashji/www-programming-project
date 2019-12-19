@@ -93,8 +93,7 @@ const userSchema = new Schema({
             // transparently encrypt password when setting it using:
             // setter must be synchronous or errors will happen
             // TODO: hash password here with bcrypt, use length of 10,
-            let hash = bcrypt.hashSync(password, 10);
-            return hash;
+            return bcrypt.hashSync(password, 10);
         }
     },
     role: {
@@ -103,37 +102,34 @@ const userSchema = new Schema({
         lowercase: true,
         enum: schemaDefaults.role.values,
         default: schemaDefaults.role.defaultValue
-    },
+    }
 });
 
-userSchema.virtual('isAdmin').get(function () {
-    return this.role === "admin";
+userSchema.virtual('isAdmin').get(function() {
+    return this.role === 'admin';
 });
 
-userSchema.virtual('isTeacher').get(function () {
-    if (this.role === "admin") return true;
-    return this.role === "teacher";
+userSchema.virtual('isTeacher').get(function() {
+    if (this.role === 'admin') return true;
+    return this.role === 'teacher';
 });
 
-userSchema.virtual('isStudent').get(function () {
-    if (this.role === "admin") return true;
-    return this.role === "student";
+userSchema.virtual('isStudent').get(function() {
+    if (this.role === 'admin') return true;
+    return this.role === 'student';
 });
 
-userSchema.statics.getAvailableRoles = function () {
+userSchema.statics.getAvailableRoles = function() {
 
-    let roles = schemaDefaults.role.values.map(i => {
-        let j = {
+    return schemaDefaults.role.values.map(i => {
+        return {
             name: i.charAt(0).toUpperCase() + i.substring(1),
             value: i
         };
-        return j;
     });
-
-    return roles;
 };
 
-userSchema.statics.validateRole = function (data) {
+userSchema.statics.validateRole = function(data) {
     // validate user input for role
     const {
         _csrf,
@@ -148,7 +144,7 @@ userSchema.statics.validateRole = function (data) {
     return result;
 };
 
-userSchema.statics.validateLogin = function (data) {
+userSchema.statics.validateLogin = function(data) {
     // validate user input for login
     const {
         email,
@@ -163,7 +159,7 @@ userSchema.statics.validateLogin = function (data) {
     return result;
 };
 
-userSchema.statics.validateRegistration = function (data) {
+userSchema.statics.validateRegistration = function(data) {
     // validate user input for registration
     // eslint-disable-next-line no-shadow
     const {
@@ -187,7 +183,7 @@ userSchema.statics.validateRegistration = function (data) {
     return result;
 };
 
-userSchema.statics.validateUpdate = function (data) {
+userSchema.statics.validateUpdate = function(data) {
     // validate user input for update
     // eslint-disable-next-line no-shadow
     const {
@@ -210,7 +206,7 @@ userSchema.statics.validateUpdate = function (data) {
     return result;
 };
 
-userSchema.methods.checkPassword = async function (password) {
+userSchema.methods.checkPassword = async function(password) {
     return await bcrypt.compare(password, this.password);
 };
 
