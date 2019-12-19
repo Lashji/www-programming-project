@@ -112,8 +112,6 @@ createBtn.addEventListener('click', () => {
 
 const addOption = (hook, questionId) => {
     console.log('adding option');
-
-
     let values = getValues(questionId);
     let html = document.createElement('div');
     html.innerHTML = optionTemplate(values);
@@ -122,15 +120,18 @@ const addOption = (hook, questionId) => {
     optionCount++;
 };
 
-const addButtonOption = (btn, questionID) => {
-    let html = document.createElement('div');
-    html.innerHTML = questionTemplate(questionID);
-    hook.appendChild(html);
-    let newhook = document.getElementById(`optionHook${questionID}`);
+const addButtonOption = (btn, questionId) => {
 
     btn.addEventListener('click', () => {
         console.log("inside eventlistenter")
-        addOption(newhook, btn.value);
+        let hook = document.getElementById(`optionHook${questionId}`);
+        console.log("hook => ", hook)
+        let values = getValues(questionId);
+        let html = document.createElement('div');
+        html.innerHTML = optionTemplate(values);
+        hook.appendChild(html);
+        optionCount++;
+
     })
 
 }
@@ -225,7 +226,7 @@ const applyButtonFunctionality = () => {
     for (let i = 0; i < addBtns.length; i++) {
         if (addBtns[i].tagName === "BUTTON") {
             console.log("add loop")
-            // addButtonOption(addBtns[i], i)
+            addButtonOption(addBtns[i], i)
         }
     }
 
@@ -247,15 +248,17 @@ window.onload = () => {
         updateform.onsubmit = (e) => {
             e.preventDefault();
 
-            let rbuttons = document.getElementsByClassName('addOptionRbutton');
-            for (let i in rbuttons) {
-                console.log("rbutton => ", rbuttons[i])
-                if (rbuttons[i].tagName === 'INPUT')
-                    rbuttons[i].removeAttribute('name');
-            }
+            let validation = validate()
+            if (validation === true) {
+                let rbuttons = document.getElementsByClassName('addOptionRbutton');
+                for (let i in rbuttons) {
+                    console.log("rbutton => ", rbuttons[i])
+                    if (rbuttons[i].tagName === 'INPUT')
+                        rbuttons[i].removeAttribute('name');
+                }
 
-            if (validate())
                 e.currentTarget.submit();
+            }
         };
     }
 
