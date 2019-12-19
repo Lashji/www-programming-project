@@ -4,17 +4,19 @@
 
     <p>index: {{@index}}</p>
     <p>qindex: {{qindex}}</p>
-    <p>question: {{this.options}}</p>
+    {{!-- <p>question: {{this.question}}</p> --}}
     <label for="questiontitle">Question title: </label>
-    <input class='form-control' type='text' name='questiontitle[{{@index}}]' id='question-title'>
+    <input class='form-control' type='text' name='questiontitle[{{@index}}]' id='question-title'
+        value="{{this.question.title}}">
 
     <label for="points{{@index}}">Max points: </label>
-    <input class="form-control" type="number" id="points{{@index}}" name="points[{{@index}}]" required>
+    <input class="form-control" type="number" id="points{{@index}}" name="points[{{@index}}]"
+        value="{{this.question.maxPoints}}" required>
 
     <div class="form-group">
         <label id="option-label" for="options-list">Options:</label>
         <ul id="optionHook{{@index}}" name="options-list" class="list-group">
-            {{#each this.options}}
+            {{#each this.question.options}}
             <div class='form-group row' id="optionRow{{@index}}">
                 <div class='col'>
                     <input class="form-control" type='text' name='option[{{../qindex}}][{{@index}}]'
