@@ -57,24 +57,24 @@
             <div class="form-group">
                 <div id='create-option-hook'>
                     <label for="option">Option: </label>
-                    <input id="option-input${questionCount}" class="form-control" type="text" required>
+                    <input id="option-input{{qindex}}" class="form-control" type="text" required>
                     <label for="hint">Hint (optional): </label>
-                    <input class="form-control" type="text" id="hint${questionCount}">
-                    <input class="radio-inline addOptionRbutton" value="true" type="radio"
-                        name="optionRadio${questionCount}" id="optionRadio-true" checked="true" required>
+                    <input class="form-control" type="text" id="hint{{qindex}}">
+                    <input class="radio-inline addOptionRbutton" value="true" type="radio" name="optionRadio{{qindex}}"
+                        id="optionRadio-true" checked="true" required>
                     <label for="optionRadio-true">True</label>
-                    <input class="radio-inline addOptionRbutton" value="false" type="radio"
-                        name="optionRadio${questionCount}" id="optionRadio-false" required>
+                    <input class="radio-inline addOptionRbutton" value="false" type="radio" name="optionRadio{{qindex}}"
+                        id="optionRadio-false" required>
                     <label for="optionRadio-false">False</label>
                     <div class="row">
                         <div class="col">
-                            <button id="add-option-btn${questionCount}" type="button" value='${questionCount}'
+                            <button id="add-option-btn{{qindex}}" type="button" value='{{qindex}}'
                                 class="btn btn-block btn-success" id="create-new-option-button">Add
                                 option
                                 <i class="fa fa-plus"></i></button>
                         </div>
                         <div class="col">
-                            <button type="button" id="removeq${questionCount}" value="${questionCount}"
+                            <button type="button" id="removeq{{qindex}}" value="{{qindex}}"
                                 class="btn btn-danger">Delete question <i class="fa fa-minus-square"></i></button>
                         </div>
                     </div>

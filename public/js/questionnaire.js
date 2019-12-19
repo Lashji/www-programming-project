@@ -166,22 +166,48 @@ const getValues = (questionId) => {
     };
 };
 
+
+
+
 window.onload = () => {
-    const form = document.getElementById('create-form');
 
-    form.onsubmit = (e) => {
-        e.preventDefault();
+    const updateform = document.getElementById('update-form');
+    if (updateform) {
+        console.log("updateform")
+        updateform.onsubmit = (e) => {
+            e.preventDefault();
 
-        let rbuttons = document.getElementsByClassName('addOptionRbutton');
-        for (let i in rbuttons) {
-            if (rbuttons[i].tagName === 'INPUT')
-                rbuttons[i].removeAttribute('name');
-        }
+            let rbuttons = document.getElementsByClassName('addOptionRbutton');
+            for (let i in rbuttons) {
+                if (rbuttons[i].tagName === 'INPUT')
+                    rbuttons[i].removeAttribute('name');
+            }
 
-        if (validate())
-            e.currentTarget.submit();
-    };
+            if (validate())
+                e.currentTarget.submit();
+        };
+    }
+
+
+    const createform = document.getElementById('create-form');
+    if (createform) {
+        console.log("createform")
+
+        createform.onsubmit = (e) => {
+            e.preventDefault();
+
+            let rbuttons = document.getElementsByClassName('addOptionRbutton');
+            for (let i in rbuttons) {
+                if (rbuttons[i].tagName === 'INPUT')
+                    rbuttons[i].removeAttribute('name');
+            }
+
+            if (validate())
+                e.currentTarget.submit();
+        };
+    }
 };
+
 
 // TODO: Validate form input
 const validate = () => {
