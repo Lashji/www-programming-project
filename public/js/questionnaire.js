@@ -82,12 +82,12 @@ const optionTemplate = ({
     <div class='col'>
     <input type='radio' name='option[${questionCount}][${optionCount}]' value='true' ${
         selectedTrue ? 'checked=true' : ''
-    } >
+        } >
     <label for='r-${optionCount}'> True</label>
 
     <input type='radio' name='option[${questionCount}][${optionCount}]' value='false' ${
         !selectedTrue ? 'checked=true' : ''
-    }>
+        }>
     <label for='r-${optionCount}'> False</label>
     </div>
 
@@ -201,9 +201,12 @@ window.onload = () => {
                 if (rbuttons[i].tagName === 'INPUT')
                     rbuttons[i].removeAttribute('name');
             }
-
-            if (validate())
+            let validation = validate()
+            if (validation === true)
                 e.currentTarget.submit();
+            else {
+                console.log(validation)
+            }
         };
     }
 };
@@ -211,6 +214,9 @@ window.onload = () => {
 
 // TODO: Validate form input
 const validate = () => {
-
+    let error = ""
+    if (error) {
+        return error
+    }
     return true
 }
