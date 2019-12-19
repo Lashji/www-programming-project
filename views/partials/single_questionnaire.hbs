@@ -27,17 +27,26 @@
                         id='hint-q${questionCount}-o{{@index}}' value='{{this.hint}}'>
                 </div>
 
-
+                {{#if this.correctness}}
                 <div class='col'>
-                    <input type='radio' name='option[${questionCount}][{{@index}}]' value='true' ${ selectedTrue
-                        ? 'checked=true' : '' }>
+                    <input type='radio' name='option[${questionCount}][{{@index}}]' value='true' checked="true">
                     <label for='r-{{@index}}'> True</label>
 
-                    <input type='radio' name='option[${questionCount}][{{@index}}]' value='false' ${ !selectedTrue
-                        ? 'checked=true' : '' }>
+                    <input type='radio' name='option[${questionCount}][{{@index}}]' value='false'>
+                    <label for='r-{{@index}}'> False</label>
+                </div>
+                {{else}}
+
+                <div class='col'>
+                    <input type='radio' name='option[${questionCount}][{{@index}}]' value='true'>
+                    <label for='r-{{@index}}'> True</label>
+
+                    <input type='radio' name='option[${questionCount}][{{@index}}]' value='false' checked="true">
                     <label for='r-{{@index}}'> False</label>
                 </div>
 
+
+                {{/if}}
                 <div class='col'><button type="button" class="btn btn-danger" value="{{@index}}"
                         id="remove{{@index}}"><i class="fa fa-minus-square"></i></button></div>
             </div>
