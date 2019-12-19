@@ -15,7 +15,7 @@ const questionTemplate = (questionCount) =>
         <div class="questionnaireContainer" id="questionRow${questionCount}">
 
             <label for="questiontitle">Question title: </label>
-            <input class='form-control' type='text' name='questiontitle[${questionCount}]' id='question-title'>
+            <input class='form-control' type='text' maxlength="100" minlength="1" name='questiontitle[${questionCount}]' id='question-title'>
 
             <label for="points${questionCount}}">Max points: </label>
                 <input class="form-control" type="number" id="points${questionCount}" name="points[${questionCount}]" required>
@@ -31,9 +31,9 @@ const questionTemplate = (questionCount) =>
                     <div class="form-group">
                         <div id='create-option-hook'>
                             <label for="option">Option: </label>
-                            <input id="option-input${questionCount}" class="form-control" type="text" required>
+                            <input id="option-input${questionCount}" class="form-control" type="text" maxlength="50" minlength="1" required>
                             <label for="hint">Hint (optional): </label>
-                            <input class="form-control" type="text" id="hint${questionCount}">
+                            <input class="form-control" type="text" maxlength="100" minlength="1" id="hint${questionCount}">
                             <input class="radio-inline addOptionRbutton" value="true" type="radio" name="optionRadio${questionCount}"
                                 id="optionRadio-true" checked="true" required>
                             <label for="optionRadio-true">True</label>
@@ -71,11 +71,11 @@ const optionTemplate = ({
     <div class='form-group row' id="optionRow${optionCount}">
 
     <div class='col'>
-    <input class="form-control option-title" type='text' name='option[${questionCount}][${optionCount}]' id='optionq${questionCount}-o${optionCount}' value='${title}'>
+    <input class="form-control option-title" type='text' maxlength="100" minlength="1" name='option[${questionCount}][${optionCount}]' id='optionq${questionCount}-o${optionCount}' value='${title}'>
     </div>
 
     <div class='col'>
-    <input class="form-control option-hint" type='text' name='option[${questionCount}][${optionCount}]' id='hint-q${questionCount}-o${optionCount}' value='${hint}'>
+    <input class="form-control option-hint" type='text' maxlength="100" minlength="1" name='option[${questionCount}][${optionCount}]' id='hint-q${questionCount}-o${optionCount}' value='${hint}'>
     </div>
 
 
@@ -264,8 +264,6 @@ window.onload = () => {
     }
 };
 
-
-// TODO: Validate form input
 const validate = () => {
     let optionVals = []
     let options = document.getElementsByClassName("option-title")
@@ -273,12 +271,10 @@ const validate = () => {
 
     for (let i in options) {
         if (options[i].tagName === 'INPUT') {
-
             console.log(options[i].value)
             if (optionVals.includes(options[i].value)) {
                 error = "Options must be unique"
-                console.log("inside if")
-                break;
+                break
             }
             optionVals.push(options[i].value)
         }
