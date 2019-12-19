@@ -1,47 +1,46 @@
 {{!-- FOR editing questionnaires --}}
 {{!-- data = q and index --}}
-<div class="questionnaireContainer" id="questionRow${questionCount}">
+<div class="questionnaireContainer" id="questionRow{{@index}}">
 
     <p>index: {{@index}}</p>
-
-    <p>question: {{this}}</p>
+    <p>qindex: {{qindex}}</p>
+    <p>question: {{this.options}}</p>
     <label for="questiontitle">Question title: </label>
-    <input class='form-control' type='text' name='questiontitle[${questionCount}]' id='question-title'>
+    <input class='form-control' type='text' name='questiontitle[{{@index}}]' id='question-title'>
 
-    <label for="points${questionCount}}">Max points: </label>
-    <input class="form-control" type="number" id="points${questionCount}" name="points[${questionCount}]" required>
+    <label for="points{{@index}}">Max points: </label>
+    <input class="form-control" type="number" id="points{{@index}}" name="points[{{@index}}]" required>
 
     <div class="form-group">
         <label id="option-label" for="options-list">Options:</label>
-        <ul id="optionHook${questionCount}" name="options-list" class="list-group">
-            {{#each this}}
+        <ul id="optionHook{{@index}}" name="options-list" class="list-group">
+            {{#each this.options}}
             <div class='form-group row' id="optionRow{{@index}}">
-
                 <div class='col'>
-                    <input class="form-control" type='text' name='option[${questionCount}][{{@index}}]'
-                        id='optionq${questionCount}-o{{@index}}' value='{{this.option}}'>
+                    <input class="form-control" type='text' name='option[{{../qindex}}][{{@index}}]'
+                        id='optionq{{../qindex}}-o{{@index}}' value='{{this.option}}'>
                 </div>
 
                 <div class='col'>
-                    <input class="form-control" type='text' name='option[${questionCount}][{{@index}}]'
-                        id='hint-q${questionCount}-o{{@index}}' value='{{this.hint}}'>
+                    <input class="form-control" type='text' name='option[{{../qindex}}][{{@index}}]'
+                        id='hint-q{{../qindex}}-o{{@index}}' value='{{this.hint}}'>
                 </div>
 
                 {{#if this.correctness}}
                 <div class='col'>
-                    <input type='radio' name='option[${questionCount}][{{@index}}]' value='true' checked="true">
+                    <input type='radio' name='option[{{../qindex}}][{{@index}}]' value='true' checked="true">
                     <label for='r-{{@index}}'> True</label>
 
-                    <input type='radio' name='option[${questionCount}][{{@index}}]' value='false'>
+                    <input type='radio' name='option[{{../qindex}}][{{@index}}]' value='false'>
                     <label for='r-{{@index}}'> False</label>
                 </div>
                 {{else}}
 
                 <div class='col'>
-                    <input type='radio' name='option[${questionCount}][{{@index}}]' value='true'>
+                    <input type='radio' name='option[{{../qindex}}][{{@index}}]' value='true'>
                     <label for='r-{{@index}}'> True</label>
 
-                    <input type='radio' name='option[${questionCount}][{{@index}}]' value='false' checked="true">
+                    <input type='radio' name='option[{{../qindex}}][{{@index}}]' value='false' checked="true">
                     <label for='r-{{@index}}'> False</label>
                 </div>
 
