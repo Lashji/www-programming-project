@@ -258,6 +258,7 @@ window.onload = () => {
                 e.currentTarget.submit();
             } else {
                 console.log(validation)
+                alert(validation)
             }
         };
     }
@@ -266,16 +267,24 @@ window.onload = () => {
 
 // TODO: Validate form input
 const validate = () => {
-
+    let optionVals = []
     let options = document.getElementsByClassName("option-title")
+    let error
 
     for (let i in options) {
-        console.log(options[i].value)
-    }
+        if (options[i].tagName === 'INPUT') {
 
-    let error = ""
+            console.log(options[i].value)
+            if (optionVals.includes(options[i].value)) {
+                error = "Options must be unique"
+                console.log("inside if")
+                break;
+            }
+            optionVals.push(options[i].value)
+        }
+    }
     if (error) {
         return error
     }
-    return false
+    return true
 }
