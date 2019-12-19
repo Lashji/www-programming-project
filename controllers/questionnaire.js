@@ -97,7 +97,7 @@ module.exports = {
             q
         });
     },
-    async delete(request, response) {},
+    async delete(request, response) { },
     async processCreate(request, response) {
         console.log('procesCreate = ', request.body);
 
@@ -109,13 +109,21 @@ module.exports = {
         newQuestionnaire.submissions = 1
         newQuestionnaire.questions = data.questions
         console.log("saving new Questionnaire => ", newQuestionnaire)
-        let questionnaire = await newQuestionnaire.save()
+        //try catchi - flash error msg
+        try {
+            let questionnaire = await newQuestionnaire.save()
 
-
-        response.render('questionnaire/view_questionnaire', {
-            questionnaire,
-        });
+            response.render('questionnaire/view_questionnaire', {
+                questionnaire,
+            });
+        } catch (err) {
+            request.flash(
+                "errorMessage", err.message
+            );
+            console.log(err)
+            return response.redirect('/questionnaires/new');
+        }
     },
-    processUpdate(request, response) {},
-    processDelete(request, response) {},
+    processUpdate(request, response) { },
+    processDelete(request, response) { },
 };
