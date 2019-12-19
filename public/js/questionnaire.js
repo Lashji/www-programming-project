@@ -42,7 +42,7 @@ const questionTemplate = (questionCount) =>
                             <label for="optionRadio-false">False</label>
                             <div class="row">
                                 <div class="col">
-                                    <button id="add-option-btn${questionCount}" type="button" value='${questionCount}' class="btn btn-block btn-success"
+                                    <button id="add-option-btn${questionCount}" type="button" value='${questionCount}' class="btn addOptionBtn btn-block btn-success"
                                     id="create-new-option-button">Add
                                     option
                                     <i class="fa fa-plus"></i></button>
@@ -121,6 +121,19 @@ const addOption = (hook, questionId) => {
     addDeleteOptionFunctionality()
     optionCount++;
 };
+
+const addButtonOption = (btn, questionID) => {
+    let html = document.createElement('div');
+    html.innerHTML = questionTemplate(questionID);
+    hook.appendChild(html);
+    let newhook = document.getElementById(`optionHook${questionID}`);
+
+    btn.addEventListener('click', () => {
+        console.log("inside eventlistenter")
+        addOption(newhook, btn.value);
+    })
+
+}
 
 const addDeleteQuestionFunctionality = () => {
     const btn = document.getElementById(`removeq${questionCount}`)
@@ -208,6 +221,14 @@ const applyButtonFunctionality = () => {
         }
     }
 
+
+    for (let i = 0; i < addBtns.length; i++) {
+        if (addBtns[i].tagName === "BUTTON") {
+            console.log("add loop")
+            // addButtonOption(addBtns[i], i)
+        }
+    }
+
     // console.log("optionBtns => ", optionBtns)
     // console.log("questionBtns =>   ", questionBtns)
     console.log("addBtns =>   ", addBtns)
@@ -255,6 +276,7 @@ window.onload = () => {
                     if (rbuttons[i].tagName === 'INPUT')
                         rbuttons[i].removeAttribute('name');
                 }
+
                 e.currentTarget.submit();
             } else {
                 console.log(validation)
