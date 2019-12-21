@@ -24,11 +24,13 @@ document.getElementById("startGame").addEventListener("click", function () {
     }
 
 });
-document.getElementById("gradeButton").addEventListener("click", function () {
-    console.log("?");
-    alert("Your Score was: " + score + "/" + maxPoints);
+if (document.getElementById("gradeButton") != null) {
+    document.getElementById("gradeButton").addEventListener("click", function () {
+        console.log("?");
+        alert("Your Score was: " + score + "/" + maxPoints);
 
-});
+    });
+}
 
 async function gameInitialize() {
     score = 0;

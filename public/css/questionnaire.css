@@ -5,3 +5,12 @@
 #create-option-hook ul {
     list-style-type: none;
 }
+
+
+.questionnaireContainer {
+    margin-top: 50px;
+    padding: 10px;
+    -webkit-box-shadow: -1px 6px 23px -4px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: -1px 6px 23px -4px rgba(0, 0, 0, 0.5);
+    box-shadow: -1px 6px 23px -4px rgba(0, 0, 0, 0.5);
+}

@@ -1,0 +1,88 @@
+{{!-- FOR editing questionnaires --}}
+{{!-- data = q and index --}}
+<div class="questionnaireContainer" id="questionRow{{@index}}">
+
+    <p>index: {{@index}}</p>
+    <p>qindex: {{qindex}}</p>
+    {{!-- <p>question: {{this.question}}</p> --}}
+    <label for="questiontitle">Question title: </label>
+    <input class='form-control' type='text' name='questiontitle[{{@index}}]' id='question-title'
+        value="{{this.question.title}}">
+
+    <label for="points{{@index}}">Max points: </label>
+    <input class="form-control" type="number" id="points{{@index}}" name="points[{{@index}}]"
+        value="{{this.question.maxPoints}}" required>
+
+    <div class="form-group">
+        <label id="option-label" for="options-list">Options:</label>
+        <ul id="optionHook{{@index}}" name="options-list" class="list-group">
+            {{#each this.question.options}}
+            <div class='form-group row' id="optionRow{{@index}}">
+                <div class='col'>
+                    <input class="form-control" type='text' name='option[{{../qindex}}][{{@index}}]'
+                        id='optionq{{../qindex}}-o{{@index}}' value='{{this.option}}'>
+                </div>
+
+                <div class='col'>
+                    <input class="form-control" type='text' name='option[{{../qindex}}][{{@index}}]'
+                        id='hint-q{{../qindex}}-o{{@index}}' value='{{this.hint}}'>
+                </div>
+
+                {{#if this.correctness}}
+                <div class='col'>
+                    <input type='radio' name='option[{{../qindex}}][{{@index}}]' value='true' checked="true">
+                    <label for='r-{{@index}}'> True</label>
+
+                    <input type='radio' name='option[{{../qindex}}][{{@index}}]' value='false'>
+                    <label for='r-{{@index}}'> False</label>
+                </div>
+                {{else}}
+
+                <div class='col'>
+                    <input type='radio' name='option[{{../qindex}}][{{@index}}]' value='true'>
+                    <label for='r-{{@index}}'> True</label>
+
+                    <input type='radio' name='option[{{../qindex}}][{{@index}}]' value='false' checked="true">
+                    <label for='r-{{@index}}'> False</label>
+                </div>
+
+
+                {{/if}}
+                <div class='col'><button type="button" class="btn optionRemoveBtn btn-danger" value="{{@index}}"
+                        id="remove{{@index}}"><i class="fa fa-minus-square"></i></button></div>
+            </div>
+            {{/each}}
+        </ul>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="form-group">
+                <div id='create-option-hook'>
+                    <label for="option">Option: </label>
+                    <input id="option-input{{qindex}}" class="form-control" type="text">
+                    <label for="hint">Hint (optional): </label>
+                    <input class="form-control" type="text" id="hint{{qindex}}">
+                    <input class="radio-inline addOptionRbutton" value="true" type="radio" name="optionRadio{{qindex}}"
+                        id="optionRadio-true" checked="true">
+                    <label for="optionRadio-true">True</label>
+                    <input class="radio-inline addOptionRbutton" value="false" type="radio" name="optionRadio{{qindex}}"
+                        id="optionRadio-false">
+                    <label for="optionRadio-false">False</label>
+                    <div class="row">
+                        <div class="col">
+                            <button id="add-option-btn{{qindex}}" type="button" value='{{qindex}}'
+                                class="btn addOptionBtn btn-block btn-success" id="create-new-option-button">Add
+                                option
+                                <i class="fa fa-plus"></i></button>
+                        </div>
+                        <div class="col">
+                            <button type="button" id="removeq{{qindex}}" value="{{qindex}}"
+                                class="btn questionRemoveBtn btn-danger">Delete question <i
+                                    class="fa fa-minus-square"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
