@@ -143,5 +143,26 @@ module.exports = {
         response.redirect("/questionnaires/")
 
     },
-    processDelete(request, response) {},
+    async processDelete(request, response) {
+
+        const id = request.params.id
+        const questionnaire = await Questionnaire.findById(id)
+
+        console.log("Questionnaire to be deleted => ", questionnaire)
+
+        if (!questionnaire) {
+            request.flash('errormessage',
+                "questionnaire not found"
+            )
+            return response.redirect("/questionnaires/")
+        }
+
+        Questionnaire.findByIdAndDelete(id).exec()
+
+        request.flash('successmessage', "Questionnaire removed succesfully")
+        response.redirect("/questionnaires/")
+
+
+
+    },
 };
