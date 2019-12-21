@@ -21,6 +21,7 @@ const optionTemplate =
 
 createBtn.addEventListener('click', () => {
     console.log(hook)
+    console.log("WE ARE PUSHING BUTTON")
     let html = document.createElement('div')
     html.innerHTML = questionnaireTemplate
     hook.appendChild(html)

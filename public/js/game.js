@@ -1,223 +1,351 @@
 'use strict';
 
-loadGameData();
+var gameOver = false;
+var gameStarted = false;
+var isMoving = false;
+var score = 0;
+var direction = "none";
+var movementSpeed = 50;
+var lives = 3;
 
-async function loadGameData() {
-    const data_uri = `/game/data/${document.location.pathname.split('/').pop()}`;
+var questionLocation = 0;
+var optionLocation = 0;
+
+var questionList = [];
+var focusedChoice = -1;
+var startingPointX = -1;
+var startingPointY = -1;
+var maxPoints = 0;
+
+document.getElementById("startGame").addEventListener("click", function () {
+    if (!gameStarted) {
+        gameStarted = true;
+        gameInitialize();
+    }
+
+});
+document.getElementById("gradeButton").addEventListener("click", function () {
+    console.log("?");
+    alert("Your Score was: " + score + "/" + maxPoints);
+
+});
+
+async function gameInitialize() {
+    score = 0;
+    var gameData = "";
+    const gameID = `${document.location.pathname.split('/').pop()}`;
+    const data_uri = `/game/games/data/` + gameID;
+    console.log(data_uri);
     try {
         const response = await fetch(data_uri);
-        const gameData = await handleResponse(response);
-        playNextRound(gameData.questions);
+        gameData = await handleResponse(response);
+
     } catch (error) {
-        handleError(error + " " + data_uri);
+        console.log(error);
+    }
+
+    var container = document.getElementById("gameContainer");
+    var gameTitle = document.createElement("h4");
+    gameTitle.id = "questionTitle";
+
+    var scoreKeeper = document.createElement("h4");
+    maxPoints = gameData.questions[0].maxPoints
+    scoreKeeper.innerHTML = "Score : 0/" + maxPoints;
+    console.log(gameData.questions[0]);
+    scoreKeeper.id = "score";
+    gameTitle.innerHTML = gameData.questions[0].title;
+    container.insertBefore(gameTitle, container.firstChild);
+    container.appendChild(scoreKeeper);
+    var button = document.getElementById("startGame");
+    button.remove();
+    var gradeButton = document.createElement("BUTTON");
+    gradeButton.innerHTML = "Grade Me!";
+    gradeButton.className = "btn btn-primary";
+    gradeButton.id = "gradeButton";
+    container.appendChild(gradeButton);
+
+
+    document.getElementById("gradeButton").addEventListener("click", function () {
+        console.log("?");
+        alert("Your Score was: " + score + "/" + maxPoints);
+
+    });
+
+    gameLoop(gameData.questions);
+}
+
+function updateScore() {
+    var scoreHeader = document.getElementById("score");
+    console.log(score);
+    scoreHeader.innerHTML = "Score : " + score + "/" + maxPoints;
+}
+function questionAnswer(question, choice) {
+    if (question.correct == choice) {
+        score += 1;
+        updateScore();
+
+    }
+    else {
+        lives--;
+    }
+    questionList.splice(focusedChoice, 1);
+    if (lives > 0) {
+        drawOptions();
+    }
+    else {
+        console.log("game Over");
+        gameOver = true;
+        endTheGame();
+    }
+
+}
+
+function endTheGame() {
+    var c = document.getElementById("gameCanvas");
+    var ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, c.width, c.height);
+
+    ctx.font = "bold 36 px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText("GAME OVER", c.width / 2, c.height / 2);
+}
+
+function drawSides(c, ctx) {
+
+
+    ctx.beginPath();
+    ctx.rect(0, 0, 100, c.height);
+    ctx.fillStyle = "green";
+    ctx.fill();
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = "bold 16px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText("CORRECT", 50, c.height / 2);
+}
+
+function drawChoice(choice) {
+    var c = document.getElementById("gameCanvas");
+    var ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, c.width, c.height);
+}
+
+function drawDebugging() {
+
+    var c = document.getElementById("gameCanvas");
+    var ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, c.width, c.height);
+    for (var i = 0; i < questionList.length; i++) {
+
+
+        var testObject = questionList[i];
+        ctx.rect(testObject.xPosition, testObject.yPosition, testObject.width, testObject.height);
+        ctx.fillStyle = "black";
+        ctx.stroke();
+        ctx.fillStyle = "cyan";
+        ctx.fill();
+    }
+    var positionTest = 0;
+    if (positionTest == 1) {
+        var x0 = questionList[0].xPosition;
+        var y0 = questionList[0].yPosition;
+        var questionHeight = questionList[0].height;
+        var questionWidth = questionList[0].width;
+        var realCoords = getMousePos(document.getElementById("gameCanvas"), event);
+        var xPosition = realCoords.x;
+        var yPosition = realCoords.y;
+        ctx.font = " 14 px Arial";
+        console.log("Question at X: " + x0 + " Y: " + y0);
+        if (xPosition > x0 && xPosition < (x0 + questionWidth) && yPosition > y0 && yPosition < (y0 + questionHeight)) {
+            console.log(questionList[0]);
+            console.log("ON TOP!");
+            console.log("Mouse X: " + xPosition + " Y: " + yPosition);
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = "green";
+            ctx.fillText("Mouse X: " + xPosition + " Y: " + yPosition, 100, 50);
+        }
+        else {
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = "red";
+            ctx.fillText("Mouse X: " + xPosition + " Y: " + yPosition, 100, 50);
+        }
+
+
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = "black";
+        ctx.fillText("Question at X: " + x0 + " Y: " + y0, 300, 50);
+    }
+
+}
+
+function drawOptions() {
+    console.log("We are Drawing");
+    var c = document.getElementById("gameCanvas");
+    var ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, c.width, c.height);
+    drawSides(c, ctx);
+
+    for (var i = 0; i < questionList.length; i++) {
+        var choice = questionList[i];
+        ctx.beginPath();
+
+        ctx.rect(choice.xPosition, choice.yPosition, choice.width, choice.height);
+        ctx.fillStyle = "cyan";
+        ctx.fill();
+
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = "black";
+
+        ctx.fillText(choice.textInside, choice.xPosition + choice.width / 2, choice.yPosition + choice.height / 2);
     }
 }
 
-/**
- * Play next round of game
- * @param {Array} questions array of game questions
- * @param {number} currentRound number of current game round (zero based)
- * @returns {void}
- */
-function playNextRound(questions, currentRound = 0) {
-    if (!Array.isArray(questions)) throw new Error('Questions is not an array');
-    if (currentRound >= questions.length) throw new Error('No more questions!');
-    const isLastRound = currentRound + 1 >= questions.length;
-    registerEventHandlers(questions, currentRound, isLastRound);
-}
 
-/**
- * Destroy and remove bubble from the dom
- * @param {HTMLElement} bubble
- * @returns {void}
- */
-function destroyBubble(bubble) {
-    clearInterval(bubble.dataset.moveId);
-    bubble.style.display = 'none';
-    bubble.parentNode.removeChild(bubble);
-}
-
-/**
- * Drops new bubble into the document
- * @param {HTMLElement} bubble
- * @returns {void}
- */
-function dropBubble(bubble) {
-    const xPos = Math.ceil(Math.random() * 400) + 30; // random x coordinate
-    let yPos = 30;
-
-    // set bubble start position, do not display yet
-    bubble.style.left = `${xPos}px`;
-    bubble.style.top = `${yPos}px`;
-
-    // update bubble position every few milliseconds
-    bubble.dataset.moveId = setInterval(function() {
-        bubble.style.top = `${yPos}px`;
-        bubble.style.display = 'block';
-        yPos *= 1.01; // speed multiplier
-
-        if (yPos > 600 || bubble.style.display === 'none') {
-            destroyBubble(bubble);
-        }
-    }, 20);
-}
-
-/**
- * Init new game with the given question and return a function
- * that starts the game. Call this function inside an event handler
- *
- * @param {object} question
- * @returns {function(): void} game starter function
- */
-function getGameStarter(question) {
-    const createBubble = getBubbleCreator();
-    const numberOfBubbles = question.options.length;
-    let counter = 0;
-
-    return function () {
-        // drop a new bubble every 2.3 seconds
-        const intervalId = setInterval(function () {
-            if (counter >= numberOfBubbles) {
-                clearInterval(intervalId);
-                return;
-            }
-
-            const bubbleData = question.options[counter];
-            dropBubble(createBubble(bubbleData));
-            counter += 1;
-        }, 2300);
+function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
     };
 }
 
-/**
- * Create a function that creates new bubbles and appends them to the DOM
- * @returns {function(bubbleData): HTMLElement} creates a new bubble based on the given data
- */
-function getBubbleCreator() {
-    const bubbles = document.getElementById('bubbles');
-    const cssClass = ['red', 'yellow', 'blue', 'green'];
+function checkIfInChoiceSide(x, y, width, height) {
+    var leftSide = 100;
+    var rightSide = document.getElementById("gameCanvas").width - 100;
 
-    return function(bubbleData) {
-        const bubbleDiv = document.createElement('div');
-        bubbleDiv.classList.add('bubble');
-        bubbleDiv.classList.add(cssClass[Math.floor(Math.random() * 4)]);
-
-        // data attributes
-        bubbleDiv.dataset.id = bubbleData.id;
-        bubbleDiv.dataset.speech = bubbleData.text;
-
-        // hide bubble initially
-        bubbleDiv.style.display = 'none';
-        bubbleDiv.innerText = bubbleData.text;
-        bubbles.appendChild(bubbleDiv);
-        return bubbleDiv;
-    };
-}
-
-/**
- * Get an event handler for new question. Handler records answers to question.
- * @param {object} question question data
- * @param {number} currentQuestion number of current question (zero based)
- * @returns {function(evt): void} event handler (for click events)
- */
-function getBubbleClickHandler(question, currentQuestion) {
-    const correctCounter = document.getElementById('correct');
-    const wrongCounter = document.getElementById('wrong');
-    const correctAnswers = question.answers;
-
-    // Create input for answers of current round
-    const answersInput = document.createElement('input');
-    answersInput.type = 'hidden';
-    answersInput.id = `answers${currentQuestion}`;
-    answersInput.name = 'answers[]';
-
-    const gameForm = document.getElementById('game-form');
-    gameForm.appendChild(answersInput);
-
-    return function(evt) {
-        if (evt.target !== evt.currentTarget) {
-            // console.table(evt.target.dataset);
-            answersInput.value += ` ${evt.target.dataset.id}`;
-
-            if (correctAnswers.includes(evt.target.dataset.id)) {
-                correctCounter.textContent =
-                    Number.parseInt(correctCounter.textContent) + 1;
-                evt.target.dataset.speech = 'correct';
-            } else {
-                wrongCounter.textContent =
-                    Number.parseInt(wrongCounter.textContent) + 1;
-                evt.target.dataset.speech = 'oops';
-            }
-
-            // eslint-disable-next-line no-undef
-            responsiveVoice.speak(
-                evt.target.dataset.speech,
-                //'English Female'
-                'Finnish Female'
-            );
-
-            destroyBubble(evt.target);
-        }
-    };
-}
-
-/**
- * Register all event handlers for the current game round and remove old hanlers
- * @param {Array} questions all question objects in an array
- * @param {number} currentQuestion number of current question (zero based)
- * @param {boolean} submitOnGameStop whether to submit the form on game stoppage or not
- * @returns {void}
- */
-function registerEventHandlers(questions, currentQuestion, submitOnGameStop = false) {
-    const question = questions[currentQuestion];
-    const bubbleClickHandler = getBubbleClickHandler(question, currentQuestion);
-
-    const gameForm = document.getElementById('game-form');
-    const startGame = getGameStarter(question);
-    const startButton = document.getElementById('start-game');
-    const submitButton = document.getElementById('grade');
-    const bubbleContainer = document.getElementById('bubbles');
-    const questionTitle = document.getElementById('question-title');
-
-    // Activate and unhide start button
-    startButton.disabled = false;
-    startButton.classList.remove('hidden');
-
-    // Disable and hide submit button
-    submitButton.disabled = true;
-    submitButton.classList.add('hidden');
-
-    // Show question title text
-    questionTitle.textContent = question.title;
-    questionTitle.classList.add('h3');
-    questionTitle.classList.remove('hidden');
-
-    startButton.onclick = function (evt) {
-        // Activate and unhide submit button
-        submitButton.disabled = false;
-        submitButton.classList.remove('hidden');
-
-        // Disable and hide start button
-        startButton.disabled = true;
-        startButton.classList.add('hidden');
-        startButton.onclick = undefined;
-
-        // unhide bubbleContainer and start listening clicks
-        bubbleContainer.classList.remove('hidden');
-        bubbleContainer.onclick = bubbleClickHandler;
-
-        startGame();
-    };
-
-    gameForm.onsubmit = function (evt) {
-        if (submitOnGameStop) return;
-
-        evt.preventDefault();
-        document.querySelectorAll('.bubble').forEach((bubble) => { destroyBubble(bubble); });
-        playNextRound(questions, currentQuestion + 1);
-        return false;
+    if (x < leftSide) {
+        questionAnswer(questionList[focusedChoice], true);
     }
+
 }
+
+function gameLoop(questions) {
+    var canvas = document.getElementById("gameCanvas");
+    var ctx = canvas.getContext("2d");
+    var canvasHeight = canvas.height;
+    var canvasWidth = canvas.width;
+    var optionCount = questions[0].options.length;
+    var boxHeight = canvasHeight / (optionCount + 1);
+    var fontSize = Math.floor(boxHeight);
+    ctx.font = fontSize + "px Arial";
+    var xPos = canvasWidth / 2;
+    var yPos = boxHeight;
+    for (var i = 0; i < optionCount; i++) {
+        questionList.push({
+            xPosition: xPos - (ctx.measureText(questions[0].options[i].option).width / 2),
+            yPosition: yPos - (fontSize / 2),
+            width: ctx.measureText(questions[0].options[i].option).width,
+            height: fontSize,
+            textInside: questions[0].options[i].option,
+            correct: questions[0].options[i].correctness
+        });
+        yPos += boxHeight;
+    }
+    drawOptions();
+    var isMousedown = false;
+
+    document.addEventListener("mousedown", function (event) {
+        var isOnTopOfChoice = false;
+        if (!gameOver) {
+            if (focusedChoice == -1) {
+                var realCoords = getMousePos(document.getElementById("gameCanvas"), event);
+                var xPosition = realCoords.x;
+                var yPosition = realCoords.y;
+                for (var i = 0; i < questionList.length; i++) {
+                    var choice = questionList[i];
+                    if ((xPosition > choice.xPosition && xPosition < (choice.xPosition + choice.width)) && (yPosition > choice.yPosition && yPosition < (choice.yPosition + choice.height))) {
+                        isOnTopOfChoice = true;
+                        focusedChoice = i;
+                        startingPointX = choice.xPosition;
+                        startingPointY = choice.yPosition;
+                    }
+                }
+            }
+            if (isOnTopOfChoice && focusedChoice != -1) {
+                console.log("TRUE");
+                isMousedown = true;
+            }
+        }
+    });
+
+    document.addEventListener("mouseup", function (event) {
+        if (focusedChoice != -1 && !gameOver) {
+            var realCoords = getMousePos(document.getElementById("gameCanvas"), event);
+            var xPosition = realCoords.x;
+            var yPosition = realCoords.y;
+
+            var minBx = xPosition;
+            var maxBx = xPosition + questionList[focusedChoice].width;
+            var minBy = yPosition;
+            var maxBy = minBy + questionList[focusedChoice].height;
+            var canBeMoved = true;
+            for (var i = 0; i < questionList.length; i++) {
+                if (i != focusedChoice) {
+                    var choice = questionList[i];
+
+                    var minAx = choice.xPosition;
+                    var minAy = choice.yPosition;
+                    var maxAx = choice.xPosition + choice.width;
+                    var maxAy = choice.yPosition + choice.height;
+
+                    var aLeftOfB = maxAx < minBx;
+                    var aRightOfB = minAx > maxBx;
+                    var aAboveB = minAy > maxBy;
+                    var aBelowB = maxAy < minBy;
+
+                    if (!(aLeftOfB || aRightOfB || aAboveB || aBelowB)) {
+
+                        canBeMoved = false;
+                        //startingPointX = xPosition;
+                        //startingPointY = yPosition;
+                        console.log("THIS IS BLOCKING");
+                        console.log(questionList[i]);
+                    }
+
+                }
+            }
+            if (canBeMoved) {
+                questionList[focusedChoice].xPosition = minBx;
+                questionList[focusedChoice].yPosition = minBy;
+                drawOptions();
+                checkIfInChoiceSide(questionList[focusedChoice].xPosition, questionList[focusedChoice].yPosition, questionList[focusedChoice].width, questionList[focusedChoice].height);
+
+            }
+            else {
+                questionList[focusedChoice].xPosition = startingPointX;
+                questionList[focusedChoice].yPosition = startingPointY;
+                drawOptions();
+            }
+
+        }
+        focusedChoice = -1;
+        isMousedown = false;
+    });
+
+
+
+    document.addEventListener("mousemove", function (event) {
+        if (isMousedown && focusedChoice != -1 && !gameOver) {
+            var realCoords = getMousePos(document.getElementById("gameCanvas"), event);
+            var xPosition = realCoords.x;
+            var yPosition = realCoords.y;
+            questionList[focusedChoice].xPosition = xPosition;
+            questionList[focusedChoice].yPosition = yPosition;
+            drawOptions();
+        }
+        else {
+            /* debugging */
+            // drawDebugging();
+        }
+    });
+
+}
+
 
 async function handleResponse(response) {
     const contentType = response.headers.get('content-type');
@@ -234,11 +362,4 @@ async function handleResponse(response) {
     }
 
     return await response.json();
-}
-
-function handleError(error) {
-    const alertContainer = document.getElementById('alert');
-    alertContainer.classList.add('alert', 'alert-danger');
-    alertContainer.classList.remove('hidden');
-    alertContainer.textContent = 'The loading of the exercise failed!';
 }
