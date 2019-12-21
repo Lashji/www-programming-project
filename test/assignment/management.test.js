@@ -50,8 +50,8 @@ describe('Game: A+ protocol', function () {
                 }]
             }
             // Some dummy data commented out for future use if needed
-            // const questionnaire = new Questionnaire(payload)
-            // await questionnaire.save()
+            const questionnaire = new Questionnaire(payload)
+            await questionnaire.save()
 
         } catch (e) {
             console.log(e)
