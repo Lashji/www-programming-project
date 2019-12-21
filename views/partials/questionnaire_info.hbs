@@ -5,26 +5,18 @@
         </div>
     </a>
     <div class="card-body">
-        {{!-- < class="card-text">Questions: {{this.questions}} --}}
-        {{!-- <ul> --}}
-        {{!-- {{#each this.questions}} --}}
-        {{!-- <li>{{this.title}}</li> --}}
+
         <h4>Question count: {{this.questions.length}}</h4>
-        {{!-- <ul>
-                {{#each this.options}}
-                <li>Option: {{this.option}} /
-                    Correctness: {{this.correctness}}
-                </li>
-                {{/each}}
-            </ul> --}}
-        {{!-- {{/each}}
-        </ul> --}}
-        {{!-- </p> --}}
+
     </div>
     <div class="card-footer">
         <h5 class="card-title">Submissions: {{this.submissions}}</h5>
         <a class="btn btn-success" href="/questionnaires/edit/{{this.id}}"><i class="fas fa-user-edit"></i>Edit</a>
-        <a class="btn btn-danger" href="/questionnaires/delete/{{this.id}}"><i class="fas fa-user-remove"></i>Remove</a>
+        <form action="/questionnaires/delete/{{this.id}}" method="POST">
+
+            <input type="submit" value="Remove" class="btn btn-danger" href="/questionnaires/delete/{{this.id}}"><i
+                class="fas fa-user-remove"></i></input>
+        </form>
     </div>
 
 </div>

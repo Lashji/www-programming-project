@@ -8,52 +8,50 @@ const createNewQuestionnaire = ({
     questiontitle,
     option
 }) => {
-    const newQuestionnaire = {
+    return {
         title: title,
-        questions: parseQuestions(questiontitle, points, option[0]),
+        questions: parseQuestions(questiontitle, points, option[0])
     };
-
-    return newQuestionnaire;
 };
 
 const parseQuestions = (questiontitles, points, option) => {
-    let questions = [];
-    console.log("Whole options => ", option)
+    const questions = [];
+    console.log('Whole options => ', option);
 
     // If there is only 1 question data comes as a string instead of a array
     // so changing it to array to simplify things
     if (!Array.isArray(questiontitles)) {
-        let tmp = questiontitles
-        questiontitles = []
-        questiontitles.push(tmp)
+        const tmp = questiontitles;
+        questiontitles = [];
+        questiontitles.push(tmp);
     }
 
 
     // If there is only 1 question data comes as a string instead of a array
     // so changing it to array to simplify things
     if (!Array.isArray(points)) {
-        let tmp = points
-        points = []
-        points.push(tmp)
+        const tmp = points;
+        points = [];
+        points.push(tmp);
     }
 
 
-    for (let i in questiontitles) {
-        let q = {
+    for (const i in questiontitles) {
+        const q = {
             title: questiontitles[i],
             maxPoints: points[i],
-            options: [],
+            options: []
         };
 
-        for (let j in option) {
-            let opt = option[j]
-            let tmp = {
+        for (const j in option) {
+            const opt = option[j];
+            const tmp = {
                 option: opt[0],
                 hint: opt[1],
-                correctness: opt[2] === 'true',
-            }
+                correctness: opt[2] === 'true'
+            };
 
-            console.log("tmp option => ", tmp);
+            console.log('tmp option => ', tmp);
             q.options.push(tmp);
         }
         questions.push(q);
@@ -74,14 +72,14 @@ module.exports = {
             .exec();
         console.log('listing', questionnaires);
         response.render('questionnaire/list_questionnaires', {
-            questionnaires,
+            questionnaires
         });
     },
     async show(request, response) {
         const questionnaire = await Questionnaire.findById(request.params.id);
         console.log('questionnaire = ', questionnaire.id);
         response.render('questionnaire/view_questionnaire', {
-            questionnaire,
+            questionnaire
         });
     },
     async create(request, response) {
@@ -97,13 +95,19 @@ module.exports = {
             q
         });
     },
-    async delete(request, response) { },
+    async delete(request, response) {
+
+        let id = request.body.id
+
+        console.log("deleting ID => ", id)
+
+    },
     async processCreate(request, response) {
         console.log('procesCreate = ', request.body);
 
-        let data = createNewQuestionnaire(request.body);
+        const data = createNewQuestionnaire(request.body);
 
-        const newQuestionnaire = new Questionnaire()
+        const newQuestionnaire = new Questionnaire();
 
         newQuestionnaire.title = data.title
         newQuestionnaire.submissions = 1
@@ -124,6 +128,41 @@ module.exports = {
             return response.redirect('/questionnaires/new');
         }
     },
-    processUpdate(request, response) { },
-    processDelete(request, response) { },
+    async processUpdate(request, response) {
+
+        // let id = request.body.id
+        console.log("updating id body => ", request.body)
+        const data = createNewQuestionnaire(request.body)
+        const questionnaire = await Questionnaire.findById(request.params.id)
+        console.log("questionnaire found => ", questionnaire)
+
+        questionnaire.title = data.title
+        questionnaire.questions = data.questions
+        await questionnaire.save()
+
+        response.redirect("/questionnaires/")
+
+    },
+    async processDelete(request, response) {
+
+        const id = request.params.id
+        const questionnaire = await Questionnaire.findById(id)
+
+        console.log("Questionnaire to be deleted => ", questionnaire)
+
+        if (!questionnaire) {
+            request.flash('errormessage',
+                "questionnaire not found"
+            )
+            return response.redirect("/questionnaires/")
+        }
+
+        Questionnaire.findByIdAndDelete(id).exec()
+
+        request.flash('successmessage', "Questionnaire removed succesfully")
+        response.redirect("/questionnaires/")
+
+
+
+    },
 };
