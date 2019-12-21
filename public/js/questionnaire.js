@@ -268,6 +268,7 @@ const validate = () => {
     let optionVals = []
     let options = document.getElementsByClassName("option-title")
     let error
+    let validTitle = document.getElementById("question-title")
 
     for (let i in options) {
         if (options[i].tagName === 'INPUT') {
@@ -277,6 +278,17 @@ const validate = () => {
                 break
             }
             optionVals.push(options[i].value)
+        }
+        if (validTitle.value === "") {
+            error = "Must have a Question title"
+            break
+        }
+        for (let j in questionCount) {
+            let validHint = document.getElementById(`hint${j}`)
+            if (validHint === "") {
+                error = "Must add a hint"
+                break
+            }
         }
     }
     if (error) {
