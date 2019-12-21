@@ -95,7 +95,13 @@ module.exports = {
             q
         });
     },
-    async delete(request, response) { },
+    async delete(request, response) {
+
+        let id = request.body.id
+
+        console.log("deleting ID => ", id)
+
+    },
     async processCreate(request, response) {
         console.log('procesCreate = ', request.body);
 
@@ -122,6 +128,20 @@ module.exports = {
             return response.redirect('/questionnaires/new');
         }
     },
-    processUpdate(request, response) { },
-    processDelete(request, response) { },
+    async processUpdate(request, response) {
+
+        // let id = request.body.id
+        console.log("updating id body => ", request.body)
+        const data = createNewQuestionnaire(request.body)
+        const questionnaire = await Questionnaire.findById(request.params.id)
+        console.log("questionnaire found => ", questionnaire)
+
+        questionnaire.title = data.title
+        questionnaire.questions = data.questions
+        await questionnaire.save()
+
+        response.redirect("/questionnaires/")
+
+    },
+    processDelete(request, response) {},
 };
