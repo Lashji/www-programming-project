@@ -11,6 +11,11 @@ const router = express.Router();
 router.use(auth.ensureAuthenticated);
 const GameController = require('../controllers/game');
 
+router.get('/', csrfProtection, GameController.listGames)
+router.get('/games/:id', csrfProtection, GameController.testTheGame)
+router.get('/games/data/:id', csrfProtection, GameController.serveGame)
 router.get('/random', csrfProtection, GameController.getRandomQuestionnaire)
+router.post('/', GameController.startTheGame)
+
 
 module.exports = router;
