@@ -16,6 +16,7 @@ var focusedChoice = -1;
 var startingPointX = -1;
 var startingPointY = -1;
 var maxPoints = 0;
+var postPath = "";
 
 document.getElementById("startGame").addEventListener("click", function () {
     if (!gameStarted) {
@@ -24,19 +25,25 @@ document.getElementById("startGame").addEventListener("click", function () {
     }
 
 });
-if (document.getElementById("gradeButton") != null) {
-    document.getElementById("gradeButton").addEventListener("click", function () {
-        console.log("?");
-        alert("Your Score was: " + score + "/" + maxPoints);
 
-    });
+function postTheResults() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", postPath, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+        scoreYouGot: score,
+        questionnaireMaxPoints: maxPoints
+    }));
 }
+
+
 
 async function gameInitialize() {
     score = 0;
     var gameData = "";
     const gameID = `${document.location.pathname.split('/').pop()}`;
     const data_uri = `/game/games/data/` + gameID;
+    postPath = `/game/games/` + gameID;
     console.log(data_uri);
     try {
         const response = await fetch(data_uri);
@@ -60,26 +67,42 @@ async function gameInitialize() {
     container.appendChild(scoreKeeper);
     var button = document.getElementById("startGame");
     button.remove();
-    var gradeButton = document.createElement("BUTTON");
-    gradeButton.innerHTML = "Grade Me!";
+    var f = document.createElement("form");
+    f.setAttribute('method', "post");
+    f.setAttribute('action', postPath);
+
+    var HiddenScore = document.createElement("input");
+    HiddenScore.setAttribute("type", "hidden");
+
+    HiddenScore.setAttribute("name", "score");
+    HiddenScore.id = "hiddenScore";
+    HiddenScore.setAttribute("value", score);
+
+    var hiddenMaxScore = document.createElement("input");
+    hiddenMaxScore.setAttribute("type", "hidden");
+
+    hiddenMaxScore.setAttribute("name", "maxScore");
+    hiddenMaxScore.id = "hiddenMaxscore";
+    hiddenMaxScore.setAttribute("value", maxPoints);
+
+    var gradeButton = document.createElement("input"); //input element, Submit button
+    gradeButton.setAttribute('type', "submit");
     gradeButton.className = "btn btn-primary";
-    gradeButton.id = "gradeButton";
-    container.appendChild(gradeButton);
+    gradeButton.setAttribute('value', "Grade Me!");
 
+    f.appendChild(gradeButton);
+    f.appendChild(HiddenScore);
+    f.appendChild(hiddenMaxScore);
 
-    document.getElementById("gradeButton").addEventListener("click", function () {
-        console.log("?");
-        alert("Your Score was: " + score + "/" + maxPoints);
-
-    });
-
+    container.appendChild(f);
     gameLoop(gameData.questions);
 }
 
 function updateScore() {
     var scoreHeader = document.getElementById("score");
-    console.log(score);
+    var hiddenScoreIterator = document.getElementById("hiddenScore");
     scoreHeader.innerHTML = "Score : " + score + "/" + maxPoints;
+    hiddenScoreIterator.setAttribute("value", score);
 }
 function questionAnswer(question, choice) {
     if (question.correct == choice) {
