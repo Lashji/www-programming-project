@@ -54,9 +54,12 @@ TODO: add your files here and give a short description
 
 ## Game
 
-TODO: describe your work
-
-"Create a short document that describes how your coursework handles these requirements." Ja erikseen maininta sitten että pitää selvittää miten se softa ajetaan.
+Game works by first listing all the questionnaires available on the server and after picking one that suits you, you are directed to the game itself.
+The Game has start button which pulls all the questionnaires data from different sub directory and loads the data into the game.
+After that you are presented with canvas that contains all the possible choices from the questionnaire and above the canvas there is header which explains what the question is.
+Dragging the correct answer to the left gives you a point and dragging wrong answer to the left deducts one life from you. After three wrong choices the game is over.
+Either when you have selected all the correct answers or you run out of lives clicking the grade button sends the answers to be graded via proper protocol. After the grading
+is complete you are presented with your point count out of maximum points.
 
 ## Management view
 
