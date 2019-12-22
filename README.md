@@ -68,9 +68,20 @@ TODO: describe your work
 
 ## Security concerns
 
-TODO: list the security threats represented in the course slides.
-Document how your application protects against the threats.
-You are also free to add more security threats + protection here, if you will.
+XSS - Cross-site Scripting
+
+CSRF - Cross-site request Forgery is prevented using CSRF tokens.
+
+SQL injections are prevented by sanitizing database inputs.
+
+Storing passwords, preventing brute-force attacks against authorization - Bcrypt is used for encrypting users' passwords.
+
+Helmet is used to help protect from some well-known web vulnerabilities by setting HTTP headers appropriately.
+
+Using secure dependencies and not using deprecated or vulnerable versions of Express:
+=== npm audit security report ===
+found 0 vulnerabilities
+in 4939 scanned packages
 
 ---
 
