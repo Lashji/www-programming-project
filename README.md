@@ -71,7 +71,7 @@ TODO: describe your work
 
 ## Security concerns
 
-XSS - Cross-site Scripting
+XSS - Cross-site Scripting - XSS-filtering is built into helmet.
 
 CSRF - Cross-site request Forgery is prevented using CSRF tokens.
 
