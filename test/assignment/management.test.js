@@ -16,8 +16,8 @@ const admin = config.get('admin');
 const createUrl = '/questionnaires/new';
 const loginUrl = '/users/login';
 const readUrl = '/questionnaires';
-const deleteUrl = '/questionnaires/edit';
-const updateUrl = '/questionnaires/delete';
+const deleteUrl = '/questionnaires/delete/';
+const updateUrl = '/questionnaires/edit/';
 
 describe('Game: A+ protocol', function() {
     let request;
@@ -219,6 +219,71 @@ describe('Game: A+ protocol', function() {
         });
     });
 
+    describe('/delete', () => {
+        let payload;
+        let response;
+
+        beforeEach(async function() {
+            const { email, password } = userData;
+            request = chai.request.agent(app);
+            response = await request
+                .post(loginUrl)
+                .type('form')
+                .send({ email, password });
+
+
+            payload = {
+                parsed: true,
+                title: 'test title 2',
+                questions: [
+                    {
+                        title: 'question2',
+                        maxPoints: 2,
+                        options: [
+                            {
+                                option: 'no',
+                                hint: '',
+                                correctness: true
+                            },
+                            {
+                                option: 'yes',
+                                hint: '',
+                                correctness: false
+                            }
+                        ]
+                    }
+                ]
+            };
+        });
+
+
+        it('should delete questionnaire from database', async () => {
+
+            const q = await Questionnaire.findOne({title: 'test title'});
+            console.log('delete questionnaire = ', q);
+            const id = q.id;
+            console.log('delete id ', id);
+
+            const url = deleteUrl + id;
+            console.log(url);
+
+            const res = await request
+                .post(url)
+                .type('form')
+                .send();
+
+            const questionaire = await Questionnaire.findOne({title: 'test title'}).exec()
+                .then((questionnaire) => {
+
+                    expect(questionnaire).to.not.exist;
+                });
+        });
+
+
+        afterEach(async function() {
+            request.close();
+        });
+    });
 
 });
 

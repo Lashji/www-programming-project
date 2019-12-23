@@ -156,7 +156,7 @@ module.exports = {
 
     },
     async processDelete(request, response) {
-
+        console.log('process delete !!!! ?????? ?!!');
         const id = request.params.id;
         const questionnaire = await Questionnaire.findById(id);
 
