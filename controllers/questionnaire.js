@@ -97,72 +97,72 @@ module.exports = {
     },
     async delete(request, response) {
 
-        let id = request.body.id
+        const id = request.body.id;
 
-        console.log("deleting ID => ", id)
+        console.log('deleting ID => ', id);
 
     },
     async processCreate(request, response) {
+
         console.log('procesCreate = ', request.body);
 
         const data = createNewQuestionnaire(request.body);
 
         const newQuestionnaire = new Questionnaire();
 
-        newQuestionnaire.title = data.title
-        newQuestionnaire.submissions = 1
-        newQuestionnaire.questions = data.questions
-        console.log("saving new Questionnaire => ", newQuestionnaire)
+        newQuestionnaire.title = data.title;
+        newQuestionnaire.submissions = 1;
+        newQuestionnaire.questions = data.questions;
+        console.log('saving new Questionnaire => ', newQuestionnaire);
         //try catchi - flash error msg
         try {
-            let questionnaire = await newQuestionnaire.save()
+            const questionnaire = await newQuestionnaire.save();
 
             response.render('questionnaire/view_questionnaire', {
-                questionnaire,
+                questionnaire
             });
         } catch (err) {
             request.flash(
-                "errorMessage", err.message
+                'errorMessage', err.message
             );
-            console.log(err)
+            console.log(err);
             return response.redirect('/questionnaires/new');
         }
     },
     async processUpdate(request, response) {
 
         // let id = request.body.id
-        console.log("updating id body => ", request.body)
-        const data = createNewQuestionnaire(request.body)
-        const questionnaire = await Questionnaire.findById(request.params.id)
-        console.log("questionnaire found => ", questionnaire)
+        console.log('updating id body => ', request.body);
+        const data = createNewQuestionnaire(request.body);
+        const questionnaire = await Questionnaire.findById(request.params.id);
+        console.log('questionnaire found => ', questionnaire);
 
-        questionnaire.title = data.title
-        questionnaire.questions = data.questions
-        await questionnaire.save()
+        questionnaire.title = data.title;
+        questionnaire.questions = data.questions;
+        await questionnaire.save();
 
-        response.redirect("/questionnaires/")
+        response.redirect('/questionnaires/');
 
     },
     async processDelete(request, response) {
 
-        const id = request.params.id
-        const questionnaire = await Questionnaire.findById(id)
+        const id = request.params.id;
+        const questionnaire = await Questionnaire.findById(id);
 
-        console.log("Questionnaire to be deleted => ", questionnaire)
+        console.log('Questionnaire to be deleted => ', questionnaire);
 
         if (!questionnaire) {
             request.flash('errormessage',
-                "questionnaire not found"
-            )
-            return response.redirect("/questionnaires/")
+                'questionnaire not found'
+            );
+            return response.redirect('/questionnaires/');
         }
 
-        Questionnaire.findByIdAndDelete(id).exec()
+        Questionnaire.findByIdAndDelete(id).exec();
 
-        request.flash('successmessage', "Questionnaire removed succesfully")
-        response.redirect("/questionnaires/")
+        request.flash('successmessage', 'Questionnaire removed succesfully');
+        response.redirect('/questionnaires/');
 
 
-
-    },
+    }
 };
