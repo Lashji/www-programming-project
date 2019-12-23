@@ -149,10 +149,6 @@ describe('Game: A+ protocol', function() {
 
         it('Should create new questionnaire to the database', async () => {
 
-            const allQ = await Questionnaire.find();
-            console.log('All questions =', allQ);
-
-
             const res =  await request
                 .post(createUrl)
                 .type('form')
@@ -166,9 +162,58 @@ describe('Game: A+ protocol', function() {
                 });
 
 
-            console.log('questionnaire test => ', questionnaire);
+        });
+
+
+        it('should not create questionnaire with faulty data', async () => {
+            payload.title = '';
+
+            const res = await request
+                .post(createUrl)
+                .type('form')
+                .send(payload);
+
+            const questionaire = await Questionnaire.findOne({title: payload.title}).exec()
+                .then((questionnaire) => {
+                    expect(questionnaire).to.not.exist;
+                });
 
         });
+
+
+        it('should not create questionnaire with duplicate title', async () => {
+            payload.title = 'test title';
+
+            const res = await request
+                .post(createUrl)
+                .type('form')
+                .send(payload);
+
+
+            const questionaire = await Questionnaire.find({title: payload.title}).exec()
+                .then((questionnaire) => {
+                    console.log('Questionnaire duplicate title ', questionnaire);
+                    expect(questionnaire).to.have.lengthOf(1);
+                });
+        });
+
+        it('should not create questionnaire without atleast one correct answer', async () => {
+
+            payload.questions[0].options[0].correctness = false;
+
+            const res = await request
+                .post(createUrl)
+                .type('form')
+                .send(payload);
+
+            const questionaire = await Questionnaire.findOne({title: payload.title}).exec()
+                .then((questionnaire) => {
+                    expect(questionnaire).to.not.exist;
+                });
+
+        });
+
+
         afterEach(async function() {
             request.close();
         });

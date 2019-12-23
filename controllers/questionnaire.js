@@ -109,19 +109,14 @@ module.exports = {
     async processCreate(request, response) {
 
         console.log('procesCreate = ', request.body);
-        console.log('CTEAING NEW QUESTIONNAIRE!!!!!');
         let data;
-        console.log('PArsed =>', request.body.parsed);
         if (request.body.parsed){
-            console.log('body parsed true');
             data = request.body;
         } else {
             data = await createNewQuestionnaire(request.body);
-            console.log('DATA INSIDE POST', data);
         }
 
 
-        console.log(data);
         const newQuestionnaire = new Questionnaire();
 
         newQuestionnaire.title = data.title;
