@@ -63,7 +63,10 @@ is complete you are presented with your point count out of maximum points.
 
 ## Management view
 
-TODO: describe your work
+To access the management view, you have to sign in to an account with the appropriate rights to do so. In this case, a teacher or an admin account.
+Once signed in, you may access the management view by selecting "Exercises" provided in the top menu. Once there, you may Create, read, update or delete questionnaires.
+Creating a questionnaire you to follow the schema demanded, otherwise your questionnaire will not be added to the list of questionnaires. To read one, you simply select it in the questionnaire list - view. To update one, you select the edit button on the questionnaire you wish to edit. To delete it, select the delete button.
+The management view also has a search box, which searches for questionnaires using the letters and words typed in - on the fly, of course.
 
 ## Tests and documentation
 
