@@ -304,19 +304,13 @@ const validate = () => {
             }
             optionVals.push(options[i].value)
         }
-        if (validTitle.value === "") {
+        if (validTitle.value === "" || validTitle === null) {
             error = "Must have a Question title"
             break
         }
-        for (let j in questionCount) {
-            let validHint = document.getElementById(`hint${j}`)
-            if (validHint === "") {
-                error = "Must add a hint"
-                break
-            }
-        }
     }
     if (error) {
+        console.log("returning error")
         return error
     }
     return true

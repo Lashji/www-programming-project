@@ -7,164 +7,316 @@ const chaiHttp = require('chai-http');
 const config = require('config');
 const expect = chai.expect;
 chai.use(chaiHttp);
-
-const http = require('http');
-
 const app = require('../../app.js');
-const Questionnaire = require("../../models/questionnaire")
+const Questionnaire = require('../../models/questionnaire');
+const User = require('../../models/user');
 
 const admin = config.get('admin');
 
-const createUrl = '/questionnaires/new/';
-// const readUrl = '/questionnaires/';
-// const deleteUrl = '/questionnaires/edit/';
-// const updateUrl = '/questionnaires/delete';
+const createUrl = '/questionnaires/new';
+const loginUrl = '/users/login';
+const readUrl = '/questionnaires';
+const deleteUrl = '/questionnaires/delete/';
+const updateUrl = '/questionnaires/edit/';
 
 describe('Game: A+ protocol', function () {
-
     let request;
+    let userData;
 
     beforeEach(async () => {
+        request = chai.request.agent(app);
+        try {
+            await User.deleteMany({});
+
+            userData = {
+                name: 'user',
+                email: 'user@sposti.fi',
+                password: '1234567890',
+                passwordConfirmation: '1234567890',
+                role: 'admin'
+            };
+
+            const user = new User(userData);
+            await user.save();
+            // const foundUser = await User.findById(user.id);
+            // console.log('foundUser => ', foundUser);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
 
         try {
             // Remove all questionnaires from database
-            // await Questionnaire.deleteMany({})
-            let payload = {
+            await Questionnaire.deleteMany({});
+            const sampleData = {
                 title: 'test title',
                 submissions: 1,
-                questions: [{
-
-                    title: "question1",
-                    maxPoints: 2,
-                    options: [{
-                        option: "yes",
-                        hint: "",
-                        correctness: true
-                    },
+                questions: [
                     {
-                        option: "no",
-                        hint: "",
-                        correctness: false
+                        title: 'question1',
+                        maxPoints: 2,
+                        options: [
+                            {
+                                option: 'yes',
+                                hint: '',
+                                correctness: true
+                            },
+                            {
+                                option: 'no',
+                                hint: '',
+                                correctness: false
+                            }
+                        ]
                     }
-                    ]
-                }]
-            }
+                ]
+            };
             // Some dummy data commented out for future use if needed
-            const questionnaire = new Questionnaire(payload)
-            await questionnaire.save()
-
+            const questionnaire = new Questionnaire(sampleData);
+            await questionnaire.save();
         } catch (e) {
-            console.log(e)
-            throw e
+            console.log(e);
+            throw e;
         }
+    });
+
+
+    describe('/questionnaire/routes', () => {
+        beforeEach(() => {
+            request = chai.request.agent(app);
+        });
+
+        it('visiting /questionnaires/new', async () => {
+            const res = await request
+                .get('/questionnaires/new');
+            expect(res).to.have.status(200);
+            console.log('questionnaire test res => ', res.redirects);
+        });
+        it('visiting /questionnaires/', async () => {
+            const res = await request
+                .get('/questionnaires/');
+            expect(res).to.have.status(200);
+        });
+
+
+        it('should accept login with correct credentials', async function () {
+            const response = await request
+                .post(loginUrl)
+                .type('form')
+                .send(userData);
+            expect(response).to.have.cookie('bwa');
+            expect(response).to.redirectTo(/\/$/);
+        });
+
 
     });
 
+
     describe('/new', () => {
-        let payload
+        let payload;
+        let response;
 
-        beforeEach(function () {
+        beforeEach(async function () {
+            const { email, password } = userData;
             request = chai.request.agent(app);
+            response = await request
+                .post(loginUrl)
+                .type('form')
+                .send({ email, password });
+
+
             payload = {
+                parsed: true,
                 title: 'test title 2',
-                submissions: 1,
-                questions: [{
-
-                    title: "question2",
-                    maxPoints: 2,
-                    options: [{
-                        option: "no",
-                        hint: "",
-                        correctness: true
-                    },
+                questions: [
                     {
-                        option: "yes",
-                        hint: "",
-                        correctness: false
+                        title: 'question2',
+                        maxPoints: 2,
+                        options: [
+                            {
+                                option: 'no',
+                                hint: '',
+                                correctness: true
+                            },
+                            {
+                                option: 'yes',
+                                hint: '',
+                                correctness: false
+                            }
+                        ]
                     }
-                    ]
-                }]
-            }
-
-            // console.log("before each payload => ", payload)
-        });
-
-        afterEach(function () {
-            request.close();
+                ]
+            };
         });
 
 
-        it("Should create new questionnaire to the database", async () => {
-            const response = await request
+        it('Should create new questionnaire to the database', async () => {
+
+            const res = await request
                 .post(createUrl)
                 .type('form')
-                .send(payload)
-            // expect(response).to.redirectTo(/\/questionnaires\/$/)
-
-            //console.log("test payload=> ", payload)
+                .send(payload);
             const questionnaire = await Questionnaire.findOne({
-                title: "test title"
+                title: 'test title 2'
             }).exec()
+                .then((questionnaire) => {
+                    expect(questionnaire).to.exist;
+                    expect(questionnaire.title).to.equal('test title 2');
+                });
 
 
-            //console.log("questionnaire test => ", questionnaire)
-
-            expect(questionnaire).to.exist
-
-        })
-    })
-
-    describe('/del', () => {
-        let payload
-
-        beforeEach(function () {
-            request = chai.request.agent(app);
-            payload = {
-                title: 'test title 3',
-                submissions: 1,
-                questions: [{
-
-                    title: "question2",
-                    maxPoints: 2,
-                    options: [{
-                        option: "no",
-                        hint: "",
-                        correctness: true
-                    },
-                    {
-                        option: "yes",
-                        hint: "",
-                        correctness: false
-                    }
-                    ]
-                }]
-            }
-            //console.log("before each payload => ", payload)
         });
 
-        afterEach(function () {
+
+        it('should not create questionnaire with faulty data', async () => {
+            payload.title = '';
+
+            const res = await request
+                .post(createUrl)
+                .type('form')
+                .send(payload);
+
+            const questionaire = await Questionnaire.findOne({ title: payload.title }).exec()
+                .then((questionnaire) => {
+                    expect(questionnaire).to.not.exist;
+                });
+
+        });
+
+
+        it('should not create questionnaire with duplicate title', async () => {
+            payload.title = 'test title';
+
+            const res = await request
+                .post(createUrl)
+                .type('form')
+                .send(payload);
+
+
+            const questionaire = await Questionnaire.find({ title: payload.title }).exec()
+                .then((questionnaire) => {
+                    console.log('Questionnaire duplicate title ', questionnaire);
+                    expect(questionnaire).to.have.lengthOf(1);
+                });
+        });
+
+        it('should not create questionnaire without atleast one correct answer', async () => {
+
+            payload.questions[0].options[0].correctness = false;
+
+            const res = await request
+                .post(createUrl)
+                .type('form')
+                .send(payload);
+
+            const questionaire = await Questionnaire.findOne({ title: payload.title }).exec()
+                .then((questionnaire) => {
+                    expect(questionnaire).to.not.exist;
+                });
+
+        });
+
+
+        afterEach(async function () {
             request.close();
         });
+    });
 
+    describe('/delete', () => {
+        let payload;
+        let response;
 
-        it("Should delete questionnaire from the database", async () => {
-            const response = await request
-                .delete(deleteUrl)
+        beforeEach(async function () {
+            const { email, password } = userData;
+            request = chai.request.agent(app);
+            response = await request
+                .post(loginUrl)
                 .type('form')
-                .send(payload)
-            // expect(response).to.redirectTo(/\/questionnaires\/$/)
-
-            //console.log("test payload=> ", payload)
-            const questionnaire = await Questionnaire.findOne({
-                title: "test title"
-            }).exec()
+                .send({ email, password });
 
 
-            //console.log("questionnaire test => ", questionnaire)
+            payload = {
+                parsed: true,
+                title: 'test title 2',
+                questions: [
+                    {
+                        title: 'question2',
+                        maxPoints: 2,
+                        options: [
+                            {
+                                option: 'no',
+                                hint: '',
+                                correctness: true
+                            },
+                            {
+                                option: 'yes',
+                                hint: '',
+                                correctness: false
+                            }
+                        ]
+                    }
+                ]
+            };
+        });
 
-            expect(questionnaire).not.to.exist
 
-        })
-    })
+        it('should delete questionnaire from database', async () => {
+
+            const q = await Questionnaire.findOne({ title: 'test title' });
+            console.log('delete questionnaire = ', q);
+            const id = q.id;
+            console.log('delete id ', id);
+
+            const url = deleteUrl + id;
+            console.log(url);
+
+            const res = await request
+                .post(url)
+                .type('form')
+                .send();
+
+            const questionaire = await Questionnaire.findOne({ title: 'test title' }).exec()
+                .then((questionnaire) => {
+
+                    expect(questionnaire).to.not.exist;
+                });
+        });
+
+        it('should not remove with random id', async () => {
+            const qnaires = await Questionnaire.find();
+            const url = `${deleteUrl}1`;
+
+            await request
+                .post(url)
+                .type('form')
+                .send();
+
+            await Questionnaire.find()
+                .then((items) => {
+                    expect(items).to.have.lengthOf(qnaires.length);
+                });
+
+        });
+
+        it('should not remove anythin without id', async () => {
+            const qnaires = await Questionnaire.find();
+
+            await request
+                .post(deleteUrl)
+                .type('form')
+                .send();
+
+            await Questionnaire.find()
+                .then((items) => {
+                    expect(items).to.have.lengthOf(qnaires.length);
+                });
+
+        });
+
+
+        afterEach(async function () {
+            request.close();
+        });
+    });
 
 });
+

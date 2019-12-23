@@ -54,9 +54,12 @@ TODO: add your files here and give a short description
 
 ## Game
 
-TODO: describe your work
-
-"Create a short document that describes how your coursework handles these requirements." Ja erikseen maininta sitten että pitää selvittää miten se softa ajetaan.
+Game works by first listing all the questionnaires available on the server and after picking one that suits you, you are directed to the game itself.
+The Game has start button which pulls all the questionnaires data from different sub directory and loads the data into the game.
+After that you are presented with canvas that contains all the possible choices from the questionnaire and above the canvas there is header which explains what the question is.
+Dragging the correct answer to the left gives you a point and dragging wrong answer to the left deducts one life from you. After three wrong choices the game is over.
+Either when you have selected all the correct answers or you run out of lives clicking the grade button sends the answers to be graded via proper protocol. After the grading
+is complete you are presented with your point count out of maximum points.
 
 ## Management view
 
@@ -68,9 +71,20 @@ TODO: describe your work
 
 ## Security concerns
 
-TODO: list the security threats represented in the course slides.
-Document how your application protects against the threats.
-You are also free to add more security threats + protection here, if you will.
+XSS - Cross-site Scripting - XSS-filtering is built into helmet.
+
+CSRF - Cross-site request Forgery is prevented using CSRF tokens.
+
+SQL injections are prevented by sanitizing database inputs.
+
+Storing passwords, preventing brute-force attacks against authorization - Bcrypt is used for encrypting users' passwords.
+
+Helmet is used to help protect from some well-known web vulnerabilities by setting HTTP headers appropriately.
+
+Using secure dependencies and not using deprecated or vulnerable versions of Express:
+=== npm audit security report ===
+found 0 vulnerabilities
+in 4939 scanned packages
 
 ---
 
