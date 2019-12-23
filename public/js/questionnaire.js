@@ -310,7 +310,8 @@ const validate = () => {
         }
     }
     if (error) {
+        console.log("returning error")
         return error
     }
-    return false
+    return true
 }
