@@ -20,37 +20,46 @@ for high-school students, especially for the domains of mathematics and computer
 
 ```
 .
-├── app.js                  --> express app
-├── index.js                --> bwa app
-├── package.json            --> app info and dependencies
-├── controllers             --> controllers (handle e.g. routing)
-│   ├──  ...                -->   ...
-│   └── hello.js            --> the same as "minimal viable grader"
-├── models                  --> models that reflect the db schemes
-│                               and take care of storing data
-├── public                  --> location for public (static) files
-│   ├── img                 --> for images
-│   ├── js                  --> for javascript
-│   └── css                 --> for styles
-├── routes                  --> a dir for router modules
-│   ├── hello.js            --> / (root) router
-│   ├──  ...                -->   ...
-│   └── users.js            --> /users router
-├── views                   --> views - visible parts
-│   ├── error.hbs           --> error view
-│   ├── hello.hbs           --> main view - "minimal viable grader"
-│   ├── layouts             --> layouts - handlebar concept
-│   │   └── layout.hbs      --> layout view, "template" to be rendered
-│   └── partials            --> smaller handlebar components to be included in views
-└── test                    --> tests
-│   ├── assignment          --> TODO: your tests here
-│   ├── integration         --> integration tests
-└── └── models              --> unit tests for models
-
+├── app.js                                --> express app
+├── index.js                              --> bwa app
+├── package.json                          --> app info and dependencies
+├── controllers                           --> controllers (handle e.g. routing)
+│   ├──  questionnaire.js                 -->  controls the questionnaire
+│   └── hello.js                          --> the same as "minimal viable grader"
+│   └── game.js                           --> controller for the game
+├── models                                --> models that reflect the db schemes
+│                                             and take care of storing data
+├── public                                --> location for public (static) files
+│   ├── img                               --> for images
+│   ├── js                                --> for javascript
+│       └── game.js                       --> game functionality
+│   └── css                               --> for styles
+├── routes                                --> a dir for router modules
+│   ├── hello.js                          --> / (root) router
+│   ├── game.js                           --> routing the game
+│   ├──  questionnaire.js                 -->   routes the questionnaire to the correct place
+│   └── users.js                          --> /users router
+├── views                                 --> views - visible parts
+│   ├── error.hbs                         --> error view
+│   ├── game.hbs                          --> the gameview itself
+│   ├── game-graded.hbs                   --> gives you score after the game is graded
+│   ├── gameList.hbs                      --> list of all the questionnaires
+│   ├── hello.hbs                         --> main view - "minimal viable grader"
+│   ├── questionnaire                     --> questionnaire handlebars
+│   │   ├── create_questionnaire.hbs      --> template for creating new questionnaire
+│   │   ├── list_questionnaire.hbs        --> template for listing all the questionnaires
+│   │   ├── view_questionnaire.hbs        --> template for viewing the questionnaire
+│   │   └── edit_questionnaire.hbs        --> template for editing existing questionnaire
+│   ├── layouts                           --> layouts - handlebar concept
+│   │   └── layout.hbs                    --> layout view, "template" to be rendered
+│   └── partials                          --> smaller handlebar components to be included in views
+└── test                                  --> tests
+│   ├── assignment                        --> TODO: your tests here
+│   ├── integration                       --> integration tests
+└── └── models                            --> unit tests for models
+                 
 
 ```
-
-TODO: add your files here and give a short description
 
 ## Game
 
@@ -67,7 +76,8 @@ TODO: describe your work
 
 ## Tests and documentation
 
-TODO: describe your work
+Tests consists of checking if deleting the questionnaire actually deletes it from database, if there is no duplicate questionnaire titles and there would be atleast one correct
+option in a single questionnaire. Also checking if it creates questionnaire to the database and it doesn't include any faulty data
 
 ## Security concerns
 
