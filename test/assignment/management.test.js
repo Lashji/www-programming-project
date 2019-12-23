@@ -37,15 +37,15 @@ describe('Game: A+ protocol', function () {
                     title: "question1",
                     maxPoints: 2,
                     options: [{
-                            option: "yes",
-                            hint: "",
-                            correctness: true
-                        },
-                        {
-                            option: "no",
-                            hint: "",
-                            correctness: false
-                        }
+                        option: "yes",
+                        hint: "",
+                        correctness: true
+                    },
+                    {
+                        option: "no",
+                        hint: "",
+                        correctness: false
+                    }
                     ]
                 }]
             }
@@ -73,20 +73,20 @@ describe('Game: A+ protocol', function () {
                     title: "question2",
                     maxPoints: 2,
                     options: [{
-                            option: "no",
-                            hint: "",
-                            correctness: true
-                        },
-                        {
-                            option: "yes",
-                            hint: "",
-                            correctness: false
-                        }
+                        option: "no",
+                        hint: "",
+                        correctness: true
+                    },
+                    {
+                        option: "yes",
+                        hint: "",
+                        correctness: false
+                    }
                     ]
                 }]
             }
 
-            console.log("before each payload => ", payload)
+            // console.log("before each payload => ", payload)
         });
 
         afterEach(function () {
@@ -101,15 +101,68 @@ describe('Game: A+ protocol', function () {
                 .send(payload)
             // expect(response).to.redirectTo(/\/questionnaires\/$/)
 
-            console.log("test payload=> ", payload)
+            //console.log("test payload=> ", payload)
             const questionnaire = await Questionnaire.findOne({
                 title: "test title"
             }).exec()
 
 
-            console.log("questionnaire test => ", questionnaire)
+            //console.log("questionnaire test => ", questionnaire)
 
             expect(questionnaire).to.exist
+
+        })
+    })
+
+    describe('/del', () => {
+        let payload
+
+        beforeEach(function () {
+            request = chai.request.agent(app);
+            payload = {
+                title: 'test title 3',
+                submissions: 1,
+                questions: [{
+
+                    title: "question2",
+                    maxPoints: 2,
+                    options: [{
+                        option: "no",
+                        hint: "",
+                        correctness: true
+                    },
+                    {
+                        option: "yes",
+                        hint: "",
+                        correctness: false
+                    }
+                    ]
+                }]
+            }
+            //console.log("before each payload => ", payload)
+        });
+
+        afterEach(function () {
+            request.close();
+        });
+
+
+        it("Should delete questionnaire from the database", async () => {
+            const response = await request
+                .delete(deleteUrl)
+                .type('form')
+                .send(payload)
+            // expect(response).to.redirectTo(/\/questionnaires\/$/)
+
+            //console.log("test payload=> ", payload)
+            const questionnaire = await Questionnaire.findOne({
+                title: "test title"
+            }).exec()
+
+
+            //console.log("questionnaire test => ", questionnaire)
+
+            expect(questionnaire).not.to.exist
 
         })
     })
