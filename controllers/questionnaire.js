@@ -2,19 +2,23 @@
 
 const Questionnaire = require('../models/questionnaire');
 // questiontitle includes all the titles submitted by the form
-const createNewQuestionnaire = ({
+const createNewQuestionnaire = async ({
     title,
     points,
     questiontitle,
     option
 }) => {
+
+    console.log('inside createnewQuestionnaire');
+
     return {
         title: title,
-        questions: parseQuestions(questiontitle, points, option[0])
+        questions: await parseQuestions(questiontitle, points, option[0])
     };
 };
 
-const parseQuestions = (questiontitles, points, option) => {
+const parseQuestions =  (questiontitles, points, option) => {
+    console.log('PARSEQUESTIONS ======>');
     const questions = [];
     console.log('Whole options => ', option);
 
@@ -105,9 +109,19 @@ module.exports = {
     async processCreate(request, response) {
 
         console.log('procesCreate = ', request.body);
+        console.log('CTEAING NEW QUESTIONNAIRE!!!!!');
+        let data;
+        console.log('PArsed =>', request.body.parsed);
+        if (request.body.parsed){
+            console.log('body parsed true');
+            data = request.body;
+        } else {
+            data = await createNewQuestionnaire(request.body);
+            console.log('DATA INSIDE POST', data);
+        }
 
-        const data = createNewQuestionnaire(request.body);
 
+        console.log(data);
         const newQuestionnaire = new Questionnaire();
 
         newQuestionnaire.title = data.title;
@@ -117,6 +131,8 @@ module.exports = {
         //try catchi - flash error msg
         try {
             const questionnaire = await newQuestionnaire.save();
+            const allQ = await Questionnaire.find();
+            console.log('ALLQ inside process', allQ);
 
             response.render('questionnaire/view_questionnaire', {
                 questionnaire
@@ -125,7 +141,7 @@ module.exports = {
             request.flash(
                 'errorMessage', err.message
             );
-            console.log(err);
+            console.log('ERRRRRRRRRRRR', err);
             return response.redirect('/questionnaires/new');
         }
     },

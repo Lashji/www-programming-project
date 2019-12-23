@@ -9,6 +9,7 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 const app = require('../../app.js');
 const Questionnaire = require('../../models/questionnaire');
+const User = require('../../models/user');
 
 const admin = config.get('admin');
 
@@ -20,18 +21,27 @@ const updateUrl = '/questionnaires/delete';
 
 describe('Game: A+ protocol', function() {
     let request;
-    const user = {...admin};
+    let userData;
 
-    const {email, password} = user;
     beforeEach(async () => {
         request = chai.request.agent(app);
+        try {
+            await User.deleteMany({});
 
+            userData = { name: 'user',
+                email: 'user@sposti.fi',
+                password: '1234567890',
+                passwordConfirmation: '1234567890',
+                role: 'admin'};
 
-        // loginRes = await request
-        //     .post(loginUrl)
-        //     .type('form')
-        //     .send({email, password});
-
+            const user = new User(userData);
+            await user.save();
+            // const foundUser = await User.findById(user.id);
+            // console.log('foundUser => ', foundUser);
+        } catch (e){
+            console.log(e);
+            throw e;
+        }
 
         try {
             // Remove all questionnaires from database
@@ -85,67 +95,85 @@ describe('Game: A+ protocol', function() {
             expect(res).to.have.status(200);
         });
 
+
+        it('should accept login with correct credentials', async function() {
+            const response = await request
+                .post(loginUrl)
+                .type('form')
+                .send(userData);
+            expect(response).to.have.cookie('bwa');
+            expect(response).to.redirectTo(/\/$/);
+        });
+
+
     });
 
-    // describe('/new', () => {
-    //     let payload;
 
-    //     beforeEach(function() {
-    //         request = chai.request.agent(app);
+    describe('/new', () => {
+        let payload;
+        let response;
 
-    //         payload = {
-    //             title: 'test title 2',
-    //             questions: [
-    //                 {
-    //                     title: 'question2',
-    //                     maxPoints: 2,
-    //                     options: [
-    //                         {
-    //                             option: 'no',
-    //                             hint: '',
-    //                             correctness: true
-    //                         },
-    //                         {
-    //                             option: 'yes',
-    //                             hint: '',
-    //                             correctness: false
-    //                         }
-    //                     ]
-    //                 }
-    //             ]
-    //         };
-    //     });
+        beforeEach(async function() {
+            const { email, password } = userData;
+            request = chai.request.agent(app);
+            response = await request
+                .post(loginUrl)
+                .type('form')
+                .send({ email, password });
 
 
-    //     it('Should create new questionnaire to the database', async () => {
+            payload = {
+                parsed: true,
+                title: 'test title 2',
+                questions: [
+                    {
+                        title: 'question2',
+                        maxPoints: 2,
+                        options: [
+                            {
+                                option: 'no',
+                                hint: '',
+                                correctness: true
+                            },
+                            {
+                                option: 'yes',
+                                hint: '',
+                                correctness: false
+                            }
+                        ]
+                    }
+                ]
+            };
+        });
 
-    //         const allQ = await Questionnaire.find();
-    //         console.log('All questions =', allQ);
-    //         console.log('USER => ', user);
+
+        it('Should create new questionnaire to the database', async () => {
+
+            const allQ = await Questionnaire.find();
+            console.log('All questions =', allQ);
 
 
-    //         const res =  await request
-    //             .post(createUrl)
-    //             .type('form')
-    //             .send(payload)
-    //             .then(async ()=> {
-    //                 const questionnaire = await Questionnaire.findOne({
-    //                     title: 'test title 2'
-    //                 }).exec();
-    //                 expect(questionnaire).to.exist;
-    //                 expect(questionnaire.title).to.equal('test title 2');
-
-    //             });
-    //         console.log('test payload=> ', payload);
+            const res =  await request
+                .post(createUrl)
+                .type('form')
+                .send(payload);
+            const questionnaire = await Questionnaire.findOne({
+                title: 'test title 2'
+            }).exec()
+                .then((questionnaire) => {
+                    expect(questionnaire).to.exist;
+                    expect(questionnaire.title).to.equal('test title 2');
+                });
 
 
-    //         console.log('questionnaire test => ', questionnaire);
+            console.log('questionnaire test => ', questionnaire);
 
-    //     });
-    // });
-
-    afterEach(async function() {
-        request.close();
+        });
+        afterEach(async function() {
+            request.close();
+        });
     });
+
+
 });
 
