@@ -9,7 +9,6 @@ const createNewQuestionnaire = async ({
     option
 }) => {
 
-    console.log('inside createnewQuestionnaire');
 
     return {
         title: title,
@@ -112,6 +111,7 @@ module.exports = {
         let data;
         if (request.body.parsed){
             data = request.body;
+            // delete data.parsed;
         } else {
             data = await createNewQuestionnaire(request.body);
         }
@@ -136,27 +136,43 @@ module.exports = {
             request.flash(
                 'errorMessage', err.message
             );
-            console.log('ERRRRRRRRRRRR', err);
+            console.log('error when deleting: ', err);
             return response.redirect('/questionnaires/new');
         }
     },
     async processUpdate(request, response) {
-
-        // let id = request.body.id
+        console.log('UPDATINGGGGG');
+        const id = request.params.id;
+        console.log('update ID =', id);
         console.log('updating id body => ', request.body);
-        const data = createNewQuestionnaire(request.body);
-        const questionnaire = await Questionnaire.findById(request.params.id);
-        console.log('questionnaire found => ', questionnaire);
 
-        questionnaire.title = data.title;
-        questionnaire.questions = data.questions;
-        await questionnaire.save();
+        let data;
+
+        if (request.body.parsed){
+            data = request.body;
+            delete data.parsed;
+        } else {
+            console.log('data not parsed');
+            data = await createNewQuestionnaire(request.body);
+        }
+        try {
+            console.log('update try');
+            const questionnaire = await Questionnaire.findById(request.params.id);
+            console.log('questionnaire found => ', questionnaire);
+
+            questionnaire.title = data.title;
+            questionnaire.questions = data.questions;
+
+            await questionnaire.save();
+        } catch (e){
+            console.log('error when updating => ', e);
+            throw e;
+        }
 
         response.redirect('/questionnaires/');
 
     },
     async processDelete(request, response) {
-        console.log('process delete !!!! ?????? ?!!');
         const id = request.params.id;
         const questionnaire = await Questionnaire.findById(id);
 

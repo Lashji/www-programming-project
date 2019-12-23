@@ -19,7 +19,7 @@ const readUrl = '/questionnaires';
 const deleteUrl = '/questionnaires/delete/';
 const updateUrl = '/questionnaires/edit/';
 
-describe('Game: A+ protocol', function () {
+describe('Game: A+ protocol', function() {
     let request;
     let userData;
 
@@ -98,7 +98,7 @@ describe('Game: A+ protocol', function () {
         });
 
 
-        it('should accept login with correct credentials', async function () {
+        it('should accept login with correct credentials', async function() {
             const response = await request
                 .post(loginUrl)
                 .type('form')
@@ -115,7 +115,7 @@ describe('Game: A+ protocol', function () {
         let payload;
         let response;
 
-        beforeEach(async function () {
+        beforeEach(async function() {
             const { email, password } = userData;
             request = chai.request.agent(app);
             response = await request
@@ -216,16 +216,15 @@ describe('Game: A+ protocol', function () {
         });
 
 
-        afterEach(async function () {
+        afterEach(async function() {
             request.close();
         });
     });
 
     describe('/delete', () => {
-        let payload;
         let response;
 
-        beforeEach(async function () {
+        beforeEach(async function() {
             const { email, password } = userData;
             request = chai.request.agent(app);
             response = await request
@@ -234,28 +233,6 @@ describe('Game: A+ protocol', function () {
                 .send({ email, password });
 
 
-            payload = {
-                parsed: true,
-                title: 'test title 2',
-                questions: [
-                    {
-                        title: 'question2',
-                        maxPoints: 2,
-                        options: [
-                            {
-                                option: 'no',
-                                hint: '',
-                                correctness: true
-                            },
-                            {
-                                option: 'yes',
-                                hint: '',
-                                correctness: false
-                            }
-                        ]
-                    }
-                ]
-            };
         });
 
 
@@ -313,10 +290,88 @@ describe('Game: A+ protocol', function () {
         });
 
 
-        afterEach(async function () {
+        afterEach(async function() {
             request.close();
         });
     });
 
+
+    describe('/edit', () => {
+        let response;
+
+        beforeEach(async () => {
+            const { email, password } = userData;
+            request = chai.request.agent(app);
+            response = await request
+                .post(loginUrl)
+                .type('form')
+                .send({ email, password });
+
+        });
+
+
+        it('Should not find updated questionnaire with old title', async () => {
+
+            const q = await Questionnaire.find({
+                title: 'test title'
+            });
+
+
+            const oldTitle = q[0].title;
+            const id = q[0].id;
+            const url = `${updateUrl}${id}`;
+
+            q[0].title = 'test title 3';
+
+            // q.title = "";
+            q.parsed = true;
+            const stringQ = JSON.stringify(q[0]);
+
+            await request
+                .post(url)
+                .type('form')
+                .send(stringQ);
+
+            await Questionnaire.findOne({title: oldTitle}).exec()
+                .then((questionnaire) =>{
+                    console.log(questionnaire);
+                    // expect(questionnaire).to.not.exist;
+                });
+
+
+        });
+
+
+        // it('Should find updated questionnaire', async () => {
+
+        //     const q = await Questionnaire.findOne({
+        //         title: 'test title'
+        //     });
+        //     console.log('OG questionnaire', q);
+
+        //     const id = q.id;
+        //     console.log('OG Q id = ', id);
+        //     const url = updateUrl + id;
+        //     q.title = 'test title 3';
+        //     console.log('EDIT URL => ', url);
+        //     q.parsed = true;
+        //     console.log('Q after parsed flag = ', q);
+        //     const stringQ = JSON.stringify(q);
+        //     await request
+        //         .post(url)
+        //         .type('form')
+        //         .send(stringQ);
+
+
+        //     await Questionnaire.findOne({title: 'test title 3'}).exec()
+        //         .then((questionnaire) =>{
+        //             expect(questionnaire).to.exist;
+        //         });
+        // });
+
+        afterEach(async function() {
+            request.close();
+        });
+    });
 });
 
