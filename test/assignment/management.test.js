@@ -279,6 +279,37 @@ describe('Game: A+ protocol', function() {
                 });
         });
 
+        it('should not remove with random id', async () => {
+            const qnaires = await Questionnaire.find();
+            const url = `${deleteUrl  }1`;
+
+            await request
+                .post(url)
+                .type('form')
+                .send();
+
+            await Questionnaire.find()
+                .then((items) => {
+                    expect(items).to.have.lengthOf(qnaires.length);
+                });
+
+        });
+
+        it('should not remove anythin without id', async () => {
+            const qnaires = await Questionnaire.find();
+
+            await request
+                .post(deleteUrl)
+                .type('form')
+                .send();
+
+            await Questionnaire.find()
+                .then((items) => {
+                    expect(items).to.have.lengthOf(qnaires.length);
+                });
+
+        });
+
 
         afterEach(async function() {
             request.close();
