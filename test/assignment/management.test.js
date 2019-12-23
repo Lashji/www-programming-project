@@ -19,7 +19,7 @@ const readUrl = '/questionnaires';
 const deleteUrl = '/questionnaires/delete/';
 const updateUrl = '/questionnaires/edit/';
 
-describe('Game: A+ protocol', function() {
+describe('Game: A+ protocol', function () {
     let request;
     let userData;
 
@@ -28,17 +28,19 @@ describe('Game: A+ protocol', function() {
         try {
             await User.deleteMany({});
 
-            userData = { name: 'user',
+            userData = {
+                name: 'user',
                 email: 'user@sposti.fi',
                 password: '1234567890',
                 passwordConfirmation: '1234567890',
-                role: 'admin'};
+                role: 'admin'
+            };
 
             const user = new User(userData);
             await user.save();
             // const foundUser = await User.findById(user.id);
             // console.log('foundUser => ', foundUser);
-        } catch (e){
+        } catch (e) {
             console.log(e);
             throw e;
         }
@@ -96,7 +98,7 @@ describe('Game: A+ protocol', function() {
         });
 
 
-        it('should accept login with correct credentials', async function() {
+        it('should accept login with correct credentials', async function () {
             const response = await request
                 .post(loginUrl)
                 .type('form')
@@ -113,7 +115,7 @@ describe('Game: A+ protocol', function() {
         let payload;
         let response;
 
-        beforeEach(async function() {
+        beforeEach(async function () {
             const { email, password } = userData;
             request = chai.request.agent(app);
             response = await request
@@ -149,7 +151,7 @@ describe('Game: A+ protocol', function() {
 
         it('Should create new questionnaire to the database', async () => {
 
-            const res =  await request
+            const res = await request
                 .post(createUrl)
                 .type('form')
                 .send(payload);
@@ -173,7 +175,7 @@ describe('Game: A+ protocol', function() {
                 .type('form')
                 .send(payload);
 
-            const questionaire = await Questionnaire.findOne({title: payload.title}).exec()
+            const questionaire = await Questionnaire.findOne({ title: payload.title }).exec()
                 .then((questionnaire) => {
                     expect(questionnaire).to.not.exist;
                 });
@@ -190,7 +192,7 @@ describe('Game: A+ protocol', function() {
                 .send(payload);
 
 
-            const questionaire = await Questionnaire.find({title: payload.title}).exec()
+            const questionaire = await Questionnaire.find({ title: payload.title }).exec()
                 .then((questionnaire) => {
                     console.log('Questionnaire duplicate title ', questionnaire);
                     expect(questionnaire).to.have.lengthOf(1);
@@ -206,7 +208,7 @@ describe('Game: A+ protocol', function() {
                 .type('form')
                 .send(payload);
 
-            const questionaire = await Questionnaire.findOne({title: payload.title}).exec()
+            const questionaire = await Questionnaire.findOne({ title: payload.title }).exec()
                 .then((questionnaire) => {
                     expect(questionnaire).to.not.exist;
                 });
@@ -214,7 +216,7 @@ describe('Game: A+ protocol', function() {
         });
 
 
-        afterEach(async function() {
+        afterEach(async function () {
             request.close();
         });
     });
@@ -223,7 +225,7 @@ describe('Game: A+ protocol', function() {
         let payload;
         let response;
 
-        beforeEach(async function() {
+        beforeEach(async function () {
             const { email, password } = userData;
             request = chai.request.agent(app);
             response = await request
@@ -259,7 +261,7 @@ describe('Game: A+ protocol', function() {
 
         it('should delete questionnaire from database', async () => {
 
-            const q = await Questionnaire.findOne({title: 'test title'});
+            const q = await Questionnaire.findOne({ title: 'test title' });
             console.log('delete questionnaire = ', q);
             const id = q.id;
             console.log('delete id ', id);
@@ -272,7 +274,7 @@ describe('Game: A+ protocol', function() {
                 .type('form')
                 .send();
 
-            const questionaire = await Questionnaire.findOne({title: 'test title'}).exec()
+            const questionaire = await Questionnaire.findOne({ title: 'test title' }).exec()
                 .then((questionnaire) => {
 
                     expect(questionnaire).to.not.exist;
@@ -281,7 +283,7 @@ describe('Game: A+ protocol', function() {
 
         it('should not remove with random id', async () => {
             const qnaires = await Questionnaire.find();
-            const url = `${deleteUrl  }1`;
+            const url = `${deleteUrl}1`;
 
             await request
                 .post(url)
@@ -311,7 +313,7 @@ describe('Game: A+ protocol', function() {
         });
 
 
-        afterEach(async function() {
+        afterEach(async function () {
             request.close();
         });
     });

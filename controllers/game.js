@@ -14,6 +14,19 @@ module.exports = {
 
 
     },
+    async gradeTheResult(request, response) {
+        var score = parseInt(request.body.score, 10);
+        var maxScore = parseInt(request.body.maxScore, 10);
+        console.log(request.body);
+        response.render('game-graded', {
+            points: score,
+            maxPoints: maxScore,
+            status: 'graded',
+            description: 'minimal viable grader in the express framework',
+            title: 'A+ greetings'
+        });
+
+    },
     async serveGame(request, response) {
         let questionnaire = await Questionnaire.find()
         parameterID = request.params.id;
