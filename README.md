@@ -1,3 +1,10 @@
+This is my implementation of Tieta12 www-programming course project.
+I did this in group with 2 other students.
+Below you can see the project assignment.
+Parts of the code were also made by the course staff as a starting template.
+
+
+
 # BWA/TIETA12 coursework assignment
 
 In the assignment, we gamify multi-choice questionnaire.
